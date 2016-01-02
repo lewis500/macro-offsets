@@ -1,0 +1,34 @@
+@import '~material-colors/dist/colors';
+
+svg.grid{
+	width: 600px;
+	height: 600px;
+}
+
+ line.lane{
+	stroke-width: 1px;
+	stroke: $md-grey-200;
+}
+
+.signal{
+	fill: none;
+	stroke: $md-green-300;
+	stroke-width: .35px;
+}
+
+.signal.red{
+	opacity: .3;
+	stroke: $md-red-900;
+}
+
+text.label{
+	font-size: 2px;
+}
+
+rect.car{
+	// x: -.25px;
+	y: -.25px;
+	width: 0.5px;
+	height: 0.5px;
+	opacity: .6;
+}

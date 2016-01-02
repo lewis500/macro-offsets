@@ -1,0 +1,84 @@
+@import '~material-colors/dist/colors';
+.car{
+	stroke: none;
+}
+
+svg#vis{
+	// width: 450px;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.car{
+	rx: .2px;
+	ry: .2px;
+}
+
+.road{
+	fill: none;
+	stroke-width: 5px;
+	stroke: $md-grey-200;
+}
+
+.label{
+	font-size: 3px;
+}
+
+.signal{
+	fill: $md-red-500;
+}
+
+.signal.green{
+	fill: $md-green-500;
+}
+
+#main > div{
+	padding: 10px;
+}
+
+circle.memory{
+	fill: $md-light-blue-500;
+	stroke: white;
+	stroke-width: .2px;
+	opacity: .5;
+}
+
+circle.memory.formula{
+	fill: $md-orange-500;
+	opacity: .8;
+}
+
+path.mfd{
+	fill: none;
+	stroke: $md-pink-500;
+}
+
+path.vel{
+	fill: none;
+	stroke: $md-green-500;
+}
+
+.en{
+	fill: none;
+	stroke:$md-pink-500;
+}
+
+.ex{
+	fill: none;
+	stroke: $md-light-blue-500;
+}
+
+.f{
+	stroke-dasharray: 2,2;
+}
+
+
+.bg{
+	fill: $md-grey-200;
+	opacity: .3;
+}
