@@ -80,7 +80,7 @@ root = (state,action)->
 
 	case actions.TICK
 		{time,signals,q,k,memory,traveling,waiting,green,cycle,offset} = state
-		for i in [til 10]
+		for i in [til 20]
 			time = time + 1
 			signals = reduce-signals {signals,time,green,cycle,offset}
 			{traveling,waiting,q,k} = reduce-cars {traveling,waiting,q,k,signals,time}

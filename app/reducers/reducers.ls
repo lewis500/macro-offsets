@@ -1,6 +1,6 @@
 {map,each,even,max,min,is-type,sort-by,flatten,Obj} = require 'prelude-ls'
 {SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
-{filter,map,each,any,min,max,find,partition,concat,tail} = require 'prelude-ls'
+{filter,map,each,any,min,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
 {uniqueId} = require 'lodash'
 # mod = (a, n) -> a - Math.floor(a/n) * n
 
@@ -11,6 +11,7 @@ reduce-cars = ({traveling,waiting,signals,time,q,k})->
 	reds = signals 
 	|> filter (sig)->	!sig.green
 	|> map (.loc)
+	|> sort-by (d)-> d
 
 	[arrivals,waiting] = waiting
 	|> partition (car)->
@@ -35,16 +36,10 @@ reduce-cars = ({traveling,waiting,signals,time,q,k})->
 				move = VF
 				new-loc = prev-loc + move
 
-			stopped-light = false
-			stopped-light = reds |> any (l)->
-				prev-loc < l < new-loc
+			next-red-loc = reds |> find (l)->
+				l>prev-loc
 
-			# stopped-light = reds |> any (signal-loc)->
-			# 	below = differ prev-loc,signal-loc
-			# 	above = differ signal-loc,new-loc
-			# 	above>0 and below>0
-
-			if !stopped-light
+			if !(next-red-loc<new-loc)
 				q+=move
 				{...car,loc:new-loc%ROAD-LENGTH}
 			else
@@ -67,7 +62,6 @@ reduce-memory = ({memory,q,k,time})->
 		if memory.length> MAX-MEMORY then memory = tail memory
 			
 	{q,k,memory}
-
 
 reduce-signals = ({signals,time,green,cycle,offset})->
 	# i=0
