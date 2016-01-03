@@ -1,6 +1,9 @@
-
++ add cumulative chart
 + draw circles on mfd
-+ add velocity chart
++ add velocity line
++ plot the predicted k and y
++ combine the tick reducers
++ have a function for remaking the signals
 
 SHORT TERM
 + make the width of the road thing dependent on the page-width
@@ -12,7 +15,8 @@ MED TERM
 + add memory
 + material design
 + create charts
-
++ add offsets in
++ make a move-car function to map over the cars so that reduce-cars isn't so long
 
 LONG TERM
 + try deku

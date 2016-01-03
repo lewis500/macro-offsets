@@ -2,7 +2,7 @@
 mc = require 'material-colors'
 require! {
 	'../actions/action-names': actions
-	'./reducers':{reduce-cars,reduce-signals,reduce-memory}
+	'./reducers':{reduce-tick}
 	'./mfd-reducer': {reduce-mfd}
 	'../constants/constants': {ROAD-LENGTH,COLORS,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
@@ -81,10 +81,7 @@ root = (state,action)->
 	case actions.TICK
 		{time,signals,q,k,memory,traveling,waiting,green,cycle,offset} = state
 		for i in [til 20]
-			time = time + 1
-			signals = reduce-signals {signals,time,green,cycle,offset}
-			{traveling,waiting,q,k} = reduce-cars {traveling,waiting,q,k,signals,time}
-			{memory,q,k} = reduce-memory {memory,time,q,k}
+			{traveling,waiting,signals,time,q,k,memory} = reduce-tick {time,signals,q,k,memory,traveling,waiting,green,cycle,offset}
 		{...state,traveling,waiting,time,signals,memory,q,k}
 
 	default state

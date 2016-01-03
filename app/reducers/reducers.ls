@@ -2,16 +2,23 @@
 {SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
 {filter,map,each,any,min,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
 {uniqueId} = require 'lodash'
-# mod = (a, n) -> a - Math.floor(a/n) * n
 
-differ = (a,b)->
-	(b - a + 500)%%1000 - 500
+reduce-tick = ({traveling,waiting,signals,time,q,k,green,offset,cycle,memory})->
+	time = time+1
+	signals = reduce-signals {signals,time,green,cycle,offset}
+	{traveling,waiting,k,q} = reduce-cars {traveling,waiting,signals,time,q,k}
+	{memory,q,k} = reduce-memory {memory,time,q,k}
+	{traveling,waiting,signals,time,q,k,memory}
 
 reduce-cars = ({traveling,waiting,signals,time,q,k})->
+
+	differ = (a,b)->
+		(b - a + 500)%%1000 - 500
+		
 	reds = signals 
 	|> filter (sig)->	!sig.green
 	|> map (.loc)
-	|> sort-by (d)-> d
+	|> sort-by -> it
 
 	[arrivals,waiting] = waiting
 	|> partition (car)->
@@ -69,4 +76,4 @@ reduce-signals = ({signals,time,green,cycle,offset})->
 		time-in-cycle = time%%cycle
 		{...signal,green: time-in-cycle<=green}
 
-export {reduce-signals,reduce-cars,reduce-memory}
+export {reduce-tick}
