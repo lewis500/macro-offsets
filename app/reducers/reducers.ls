@@ -35,10 +35,11 @@ reduce-cars = ({traveling,waiting,signals,time,q,k})->
 				move = VF
 				new-loc = prev-loc + move
 
+			stopped-light = false
 			stopped-light = reds |> any (l)->
 				prev-loc < l < new-loc
 
-			# stopped-light = reds |> find (signal-loc)->
+			# stopped-light = reds |> any (signal-loc)->
 			# 	below = differ prev-loc,signal-loc
 			# 	above = differ signal-loc,new-loc
 			# 	above>0 and below>0
