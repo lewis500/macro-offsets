@@ -23,6 +23,7 @@ reduce-cars = ({traveling,waiting,signals,time,q,k})->
 	traveling = traveling |> map (car)->
 			prev-loc = car.loc
 			next-car = traveling[(++car-num)%traveling.length]
+			move = 0
 			if next-car
 				gap = differ prev-loc,next-car.loc
 				if gap>SPACE
@@ -34,15 +35,18 @@ reduce-cars = ({traveling,waiting,signals,time,q,k})->
 				move = VF
 				new-loc = prev-loc + move
 
-			stopped-light = reds |> find (signal-loc)->
-				below = differ prev-loc,signal-loc
-				above = differ signal-loc,new-loc
-				above>0 and below>0
+			stopped-light = reds |> any (l)->
+				prev-loc < l < new-loc
 
-			if typeof stopped-light == \undefined
+			# stopped-light = reds |> find (signal-loc)->
+			# 	below = differ prev-loc,signal-loc
+			# 	above = differ signal-loc,new-loc
+			# 	above>0 and below>0
+
+			if !stopped-light
+				q+=move
 				{...car,loc:new-loc%ROAD-LENGTH}
 			else
-				q+=move
 				{...car,loc:prev-loc}
 
 	k+= (.length) traveling

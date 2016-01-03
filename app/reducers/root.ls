@@ -66,11 +66,11 @@ root = (state,action)->
 	case actions.SET-NUM-SIGNALS
 		n = num-signals = action.num-signals
 		offset = 1/n * Math.round offset*n
-		signals = [til num-signals] |> map (i)->
-			res =
-				loc: Math.floor i/num-signals*ROAD-LENGTH
-				id: i
-				green: true
+		signals = [til num-signals] 
+		|> map (i)->
+			loc: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
+			id: i
+			green: true
 		mfd = reduce-mfd {...state,num-signals}
 		{...state,signals,num-signals,mfd}
 
