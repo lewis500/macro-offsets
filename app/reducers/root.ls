@@ -4,6 +4,7 @@ require! {
 	'../actions/action-names': actions
 	'./reducers':{reduce-tick}
 	'./mfd-reducer': {reduce-mfd}
+	# './formula-reducer': {reduce-formula}
 	'../constants/constants': {ROAD-LENGTH,COLORS,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random}
@@ -25,6 +26,7 @@ cars = [til NUM-CARS]
 
 initial-state = 
 	time: 0
+	cars: cars
 	paused: true
 	signals: []
 	traveling: []
@@ -41,53 +43,49 @@ initial-state =
 	EX: 0
 	memory-EN: []
 	memory-EX: []
+	formula-EN: []
+	formula-EX: []
+	rates: []
+
+reset = (state)->
+		waiting = [...cars]
+		time = 0
+		paused = true
+		traveling = []
+		EN = EX = 0
+		memory = []
+		memory-EN = []
+		memory-EX = []
+		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory}
+	
 
 root = (state,action)->
 	window.a = state
 	switch action.type
 	case actions.RESET
-		waiting = [...cars]
-		time = 0
-		paused = true
-		traveling = []
-		{...state,waiting,time,paused,traveling}
-
+		reset state
 	case actions.SET-CYCLE
-		cycle = action.cycle
-		mfd = reduce-mfd {...state,cycle}
-		{...state,cycle,mfd}
-
+		reduce-mfd {...state,cycle: action.cycle}
 	case actions.SET-OFFSET
-		offset = action.offset
-		mfd = reduce-mfd {...state,offset}
-		{...state,mfd,offset}
-
+		reduce-mfd {...state,offset: action.offset}
 	case actions.SET-GREEN
-		green = action.green
-		mfd = reduce-mfd {...state,green}
-		{...state,green,mfd}
-
+		reduce-mfd {...state,green: action.green}
 	case actions.SET-NUM-SIGNALS
-		n = num-signals = action.num-signals
-		offset = 1/n * Math.round offset*n
+		num-signals = action.num-signals
 		signals = [til num-signals] 
 		|> map (i)->
 			loc: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
 			id: i
 			green: true
-		mfd = reduce-mfd {...state,num-signals}
-		{...state,signals,num-signals,mfd}
-
+		reduce-mfd {...state,num-signals,signals}
 	case actions.PAUSE-PLAY
 		paused = !state.paused
 		{...state, paused}
 
 	case actions.TICK
-		{time,signals,q,k,memory,traveling,waiting,green,cycle,offset,EN,EX,memory-EX,memory-EN} = state
 		for i in [til 20]
-			{traveling,waiting,signals,time,q,k,memory, EN,EX,memory-EX,memory-EN} = reduce-tick {time,signals,q,k,memory,traveling,waiting,green,cycle,offset,EN,EX,memory-EX,memory-EN}
-		{...state,traveling,waiting,time,signals,memory,q,k,memory-EX,memory-EN,EN,EX}
-
+			state = reduce-tick state
+		state
 	default state
 
 export {root,initial-state}

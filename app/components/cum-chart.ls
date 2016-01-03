@@ -34,8 +34,8 @@ yAxis = d3.svg
 
 line = d3.svg
 	.line()
-	.x (d)-> x d.time
-	.y (d)-> y d.val
+	.x (.time)>>x
+	.y (.val)>>y
 
 Cum-Chart = react.create-class do
 	componentDidMount: ->

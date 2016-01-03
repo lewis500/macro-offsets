@@ -2,6 +2,7 @@ d3 = require 'd3'
 _ = require 'lodash'
 {VF,Q0,KJ,W,ROAD-LENGTH} = require '../constants/constants'
 {map,concat-map} = require 'prelude-ls'
+{reduce-formula} = require './formula-reducer'
 
 loop-over-entries = (it)->
 	[g0,g,i,res] = [1000,999,0,[]]
@@ -31,10 +32,12 @@ find-min = (k,table)->
 	v = if k>0 then q/k else 0
 	{k,q,v}
 
-reduce-mfd = ({num-signals,cycle,green,offset})->
+reduce-mfd = (state)->
+	{num-signals,cycle,green,offset} = state
 	d = ROAD-LENGTH/num-signals
 	table = ['forward','backward'] |> concat-map (direction)->
 		loop-over-entries {d,cycle,green,offset,direction}
-	_.range 0.01,1.01,0.01 |> map find-min _,table
+	mfd = _.range 0.01,1.01,0.01 |> map find-min _,table
+	{...state,mfd} |> reduce-formula
 
 export reduce-mfd

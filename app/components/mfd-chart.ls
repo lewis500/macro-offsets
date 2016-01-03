@@ -29,16 +29,16 @@ yAxis = d3.svg.axis()
 	.orient 'left'
 
 line = d3.svg.line()
-	.x (d)-> x d.k
-	.y (d)-> y d.q
+	.x (.k)>>x
+	.y (.q)>>y
 
 y2 = d3.scale.linear()
 	.domain [0,1]
 	.range [height,0]
 
 line2 = d3.svg.line()
-	.x (d)-> x d.k
-	.y (d)-> y2 d.v
+	.x (.k)>>x
+	.y (.v)>>y2
 
 MFD-Chart = react.create-class do
 	componentDidMount: ->

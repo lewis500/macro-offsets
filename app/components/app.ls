@@ -32,13 +32,11 @@ App = react.create-class do
 					style: {display: \flex}
 					Ring-Road {traveling,signals}
 				div do
-					style: {display: \flex, flex-direction: \column}
-					div do
-						style: {display: \flex}
-						MFD-Chart {}
-					div do
-						style: {display: \flex}
-						Cum-Chart {}
+					style: {display: \flex}
+					MFD-Chart {}
+				div do
+					style: {display: \flex}
+					Cum-Chart {}
 
 	pause-play: ->
 		if @props.paused

@@ -1,12 +1,13 @@
-+ add cumulative chart
+MAKE PREDITIONS
++ plot the predicted k and y
++ have a function for remaking the signals
+
 + add velocity line
 + use an underscore for the prelude functions
 
 
 
 SHORT TERM
-+ make the width of the road thing dependent on the page-width
-+ add exiting
 
 
 MED TERM
@@ -16,15 +17,12 @@ MED TERM
 save memory by not recording the cumulative at every moment
 + add offsets in
 + make a move-car function to map over the cars so that reduce-cars isn't so long
++ make the width of the road thing dependent on the page-width
 
-MAKE PREDITIONS
-+ plot the predicted k and y
-+ have a function for remaking the signals
 
 LONG TERM
 + try deku
 + rename the k state variable so it's actually n
 + simplify the moving logic for cars
-
 
 try out using comparison
