@@ -1,12 +1,16 @@
-+ use a memoize function to get rid of the pause-play method and hence the class-naess of App. if the thing changes, then the timer gets notified.
++ or...only fire the request animation frame on a tick  action
 
-
-
-+ make it so cars get added
-+ revert tot he old way of doing pause-play
+SHORT TERM
 + styles
-+ fix the problem that keeps cars from passing loc=0
-+ maybe take the whole playing/pausing thing out of the component entirely?
++ make the width of the road thing dependent on the page-width
++ add exiting
+
+
+MED TERM
++ add memory
++ material design
++ create charts
++ 
 
 LONG TERM
 + try deku

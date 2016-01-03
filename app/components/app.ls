@@ -35,7 +35,6 @@ App = react.create-class do
 				@props.paused
 		@props.pause-play()
 
-			# ADD OTHER CHARTS AND SUCH LATER ON.
 |> connect do
 	-> it{paused,time,traveling,signals}
 	(dispatch) ->

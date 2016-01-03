@@ -1,14 +1,14 @@
 {map,each,even,max,min,is-type,sort-by,flatten,Obj} = require 'prelude-ls'
-{SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH} = require '../constants/constants'
-{filter,map,each,any,min,max,find,partition,concat} = require 'prelude-ls'
-
+{SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
+{filter,map,each,any,min,max,find,partition,concat,tail} = require 'prelude-ls'
+{uniqueId} = require 'lodash'
 mod = (a, n) -> a - Math.floor(a/n) * n
 
 differ = (a,b)->
 		dx = b - a
 		mod(dx + ROAD-LENGTH/2,ROAD-LENGTH) - ROAD-LENGTH/2
 
-reduce-cars = ({traveling,waiting,signals,time})->
+reduce-cars = ({traveling,waiting,signals,time,q,k})->
 	reds = signals 
 	|> filter (sig)->	!sig.green
 	|> map (.loc)
@@ -27,11 +27,13 @@ reduce-cars = ({traveling,waiting,signals,time})->
 			if next-car
 				gap = differ prev-loc,next-car.loc
 				if gap>SPACE
-					new-loc = prev-loc + min(VF,gap)
+					move = min(VF,gap)
+					new-loc = prev-loc + move
 				else 
 					new-loc = prev-loc
 			else
-				new-loc = prev-loc + VF
+				move = VF
+				new-loc = prev-loc + move
 
 			stopped-light = reds |> find (signal-loc)->
 				below = differ prev-loc,signal-loc
@@ -41,14 +43,33 @@ reduce-cars = ({traveling,waiting,signals,time})->
 			if typeof stopped-light == \undefined
 				{...car,loc:new-loc%ROAD-LENGTH}
 			else
+				q+=move
 				{...car,loc:prev-loc}
 
-	{traveling,waiting} 
+	k+= (.length) traveling
+
+	{traveling,waiting,k,q} 
+
+reduce-memory = ({memory,q,k,time})->
+	if (time%MEMORY-FREQ) == 0
+		new-memory = 
+			q: q/MEMORY-FREQ/ROAD-LENGTH
+			k: k/MEMORY-FREQ
+			id: uniqueId()
+
+		memory  = [...memory, new-memory]
+
+		q = k = 0
+		# make sure it's not too long
+		if memory.length> MAX-MEMORY then memory = tail memory
+			
+	{q,k,memory}
+
 
 reduce-signals = ({signals,time,green,cycle,offset})->
-	i=0
+	# i=0
 	signals |> map (signal)->
-		time-in-cycle = (time)%%cycle
+		time-in-cycle = time%%cycle
 		{...signal,green: time-in-cycle<=green}
 
-export {reduce-signals,reduce-cars}
+export {reduce-signals,reduce-cars,reduce-memory}

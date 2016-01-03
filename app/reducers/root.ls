@@ -2,7 +2,7 @@
 mc = require 'material-colors'
 require! {
 	'../actions/action-names': actions
-	'./reducers':{reduce-cars,reduce-signals}
+	'./reducers':{reduce-cars,reduce-signals,reduce-memory}
 	'../constants/constants': {ROAD-LENGTH,COLORS,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random}
@@ -32,6 +32,9 @@ initial-state =
 	green: 50
 	offset: 0
 	num_signals: 5
+	q: 0
+	k: 0
+	memory: []
 
 root = (state,action)->
 	window.a = state
@@ -42,16 +45,19 @@ root = (state,action)->
 		paused = true
 		traveling = []
 		{...state,waiting,time,paused,traveling}
+
 	case actions.SET-CYCLE
 		cycle = action.cycle
 		{...state,cycle}
+
 	case actions.SET-OFFSET
 		offset = action.offset
-		# offset = 1/state.num-signals * Math.round action.offset*num-signals
 		{...state,offset}
+
 	case actions.SET-GREEN
 		green = action.green
 		{...state,green}
+
 	case actions.SET-NUM-SIGNALS
 		n = num-signals = action.num-signals
 		offset = 1/n * Math.round offset*n
@@ -61,15 +67,18 @@ root = (state,action)->
 				id: i
 				green: true
 		{...state,signals,num-signals}
+
 	case actions.PAUSE-PLAY
 		paused = !state.paused
 		{...state, paused}
+
 	case actions.TICK
-		{signals,time,traveling,waiting} = state
-		time = time+1
+		time = state.time + 1
 		signals = reduce-signals state
-		{traveling,waiting} = reduce-cars state
-		{...state,traveling,waiting,time,signals}
+		{traveling,waiting,q,k} = reduce-cars {...state,signals,time}
+		{memory,q,k} = reduce-memory {...state,time,q,k}
+		{...state,traveling,waiting,time,signals,memory,q,k}
+
 	default state
 
 export {root,initial-state}
