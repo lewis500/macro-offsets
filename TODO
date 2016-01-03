@@ -1,5 +1,3 @@
-+ use nesting to simplify the structure of what you pass around. make memory one big object.
-+ rename the k state variable so it's actually n
 + add cumulative chart
 + add velocity line
 + use an underscore for the prelude functions
@@ -15,6 +13,7 @@ MED TERM
 + or...only fire the request animation frame on a tick  action
 + material design
 + create charts
+save memory by not recording the cumulative at every moment
 + add offsets in
 + make a move-car function to map over the cars so that reduce-cars isn't so long
 
@@ -24,6 +23,7 @@ MAKE PREDITIONS
 
 LONG TERM
 + try deku
++ rename the k state variable so it's actually n
 + simplify the moving logic for cars
 
 

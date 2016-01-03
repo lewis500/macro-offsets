@@ -2,6 +2,7 @@ require!{
 	'./ring-road':{Ring-Road}
 	'./header':{Header}
 	'./mfd-chart':{MFD-Chart}
+	'./cum-chart':{Cum-Chart}
 	react: {DOM:{div,p,button}}:react
 	'react-redux': {connect}
 	d3: {timer}
@@ -31,8 +32,13 @@ App = react.create-class do
 					style: {display: \flex}
 					Ring-Road {traveling,signals}
 				div do
-					style: {display: \flex}
-					MFD-Chart {traveling,signals}
+					style: {display: \flex, flex-direction: \column}
+					div do
+						style: {display: \flex}
+						MFD-Chart {}
+					div do
+						style: {display: \flex}
+						Cum-Chart {}
 
 	pause-play: ->
 		if @props.paused

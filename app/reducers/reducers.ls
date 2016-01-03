@@ -72,16 +72,16 @@ reduce-cars = (state)->
 
 reduce-memory = (state)->
 	{memory,q,k,time,EN,EX,memory-EN,memory-EX} = state
-
-	memory-EN = [...memory-EN,{time: time, EN}]
-	memory-EX = [...memory-EX,{time: time, EX}]
+	if time%10 is 0
+		memory-EN = [...memory-EN,{time: time, val: EN}]
+		memory-EX = [...memory-EX,{time: time, val: EX}]
 	if (time%MEMORY-FREQ) == 0
 		new-memory = 
 			q: q/MEMORY-FREQ/ROAD-LENGTH
 			k: k/MEMORY-FREQ/ROAD-LENGTH
 			id: uniqueId()
 
-		memory  = [new-memory] `concat` memory
+		memory  = [...memory,new-memory]
 
 		q = k = 0
 		if memory.length> MAX-MEMORY then memory = tail memory
