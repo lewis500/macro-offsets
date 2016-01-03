@@ -69,7 +69,6 @@ root = (state,action)->
 		signals = reduce-signals state
 		{traveling,waiting} = reduce-cars state
 		{...state,traveling,waiting,time,signals}
-
 	default state
 
 export {root,initial-state}

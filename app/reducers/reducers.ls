@@ -9,22 +9,9 @@ differ = (a,b)->
 		mod((dx + 500),1000) - 500
 
 reduce-cars = ({traveling,waiting,signals,time})->
-	# reds = signals 
-	# |> filter (sig)->	!sig.green
-	# |> map (.loc)
-	# arrivals = []
-	# waiting |> each (car)->
-	# 	if car.entry-time<=time
-	# 		if traveling.length is 0
-	# 			arrivals.push car
-	# 		else
-	# 			if 
-
-
-	# 	waiting |> filter (car)->
-
-	# # console.log arrivals
-	# waiting = 
+	reds = signals 
+	|> filter (sig)->	!sig.green
+	|> map (.loc)
 
 	[arrivals,waiting] = waiting
 	|> partition (car)->
@@ -47,23 +34,22 @@ reduce-cars = ({traveling,waiting,signals,time})->
 				console.log 'asdf'
 				new-loc = prev-loc + VF
 
-			# stopped-light = reds |> find (signal-loc)->
-			# 	below = differ prev-loc,signal-loc
-			# 	above = differ signal-loc,new-loc
-			# 	above>0 and below<0
+			stopped-light = reds |> find (signal-loc)->
+				below = differ prev-loc,signal-loc
+				above = differ signal-loc,new-loc
+				above>0 and below>0
 
-			# if stopped-light `is-type` \undefined
-			# 	{...car,loc:prev-loc}
-			# else
-			{...car,loc:new-loc%ROAD-LENGTH}
+			if typeof stopped-light == \undefined
+				{...car,loc:new-loc%ROAD-LENGTH}
+			else
+				{...car,loc:prev-loc}
 
 	{traveling,waiting} 
 
 reduce-signals = ({signals,time,green,cycle,offset})->
 	i=0
 	signals |> map (signal)->
-		time-in-cycle = (time - (++i)*offset)%%cycle
-		green = time-in-cycle<=green
-		{...signal,green}
+		time-in-cycle = (time)%%cycle
+		{...signal,green: time-in-cycle<=green}
 
 export {reduce-signals,reduce-cars}
