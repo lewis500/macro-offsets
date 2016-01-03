@@ -19,9 +19,9 @@ cars = [til NUM-CARS]
 			fill: sample COLORS
 			trip-length: TRIP-LENGTH
 			exited: false
-			travel: TRIP-LENGTH
+			move: 0
+			cum-move: 0
 			entry-time: RUSH-LENGTH*n/NUM-CARS
-			exit-loc: (entry-loc + TRIP-LENGTH)%ROAD-LENGTH
 
 initial-state = 
 	time: 0
@@ -37,6 +37,10 @@ initial-state =
 	k: 0
 	memory: []
 	mfd:[]
+	EN: 0
+	EX: 0
+	memory-EN: []
+	memory-EX: []
 
 root = (state,action)->
 	window.a = state
@@ -79,10 +83,10 @@ root = (state,action)->
 		{...state, paused}
 
 	case actions.TICK
-		{time,signals,q,k,memory,traveling,waiting,green,cycle,offset} = state
+		{time,signals,q,k,memory,traveling,waiting,green,cycle,offset,EN,EX,memory-EX,memory-EN} = state
 		for i in [til 20]
-			{traveling,waiting,signals,time,q,k,memory} = reduce-tick {time,signals,q,k,memory,traveling,waiting,green,cycle,offset}
-		{...state,traveling,waiting,time,signals,memory,q,k}
+			{traveling,waiting,signals,time,q,k,memory, EN,EX,memory-EX,memory-EN} = reduce-tick {time,signals,q,k,memory,traveling,waiting,green,cycle,offset,EN,EX,memory-EX,memory-EN}
+		{...state,traveling,waiting,time,signals,memory,q,k,memory-EX,memory-EN,EN,EX}
 
 	default state
 

@@ -3,12 +3,12 @@
 {filter,map,each,any,min,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
 {uniqueId} = require 'lodash'
 
-reduce-tick = ({traveling,waiting,signals,time,q,k,green,offset,cycle,memory})->
+reduce-tick = ({traveling,waiting,signals,time,q,k,green,offset,cycle,memory,EN,EX,memory-EN,memory-EX})->
 	time = time + 1
 	signals = reduce-signals {signals,time,green,cycle,offset}
-	{traveling,waiting,k,q} = reduce-cars {traveling,waiting,signals,time,q,k}
-	{memory,q,k} = reduce-memory {memory,time,q,k}
-	{traveling,waiting,signals,time,q,k,memory}
+	{traveling,waiting,k,q,EN,EX} = reduce-cars {traveling,waiting,signals,time,q,k,EN,EX}
+	{memory,q,k,memory-EN,memory-EX,EN,EX} = reduce-memory {memory,time,q,k,EN,EX,memory-EN,memory-EX}
+	{traveling,waiting,signals,time,q,k,memory,memory-EN,memory-EX}
 
 move-car = (car,next-car,reds)->
 	prev-loc = car.loc
@@ -24,23 +24,24 @@ move-car = (car,next-car,reds)->
 		move = VF
 		new-loc = prev-loc + move
 
-	next-red-loc = reds |> find (l)->
-		l>prev-loc
+	next-red-loc = reds
+	|> find (l)->	l>prev-loc
 
 	if !(next-red-loc<new-loc)
-		{...car,loc:new-loc%ROAD-LENGTH,move}
+		{...car,loc:new-loc%ROAD-LENGTH,move,cum-move: car.cum-move+move}
 	else
-		{...car,loc:prev-loc,move}
+		{...car,loc:prev-loc,move,cum-move: car.cum-move+move}
 
-reduce-cars = ({traveling,waiting,signals,time,q,k})->
+reduce-cars = ({traveling,waiting,signals,time,q,k,EN,EX})->
 	reds = signals
 	|> filter (.green)>>(not)
 	|> map (.loc)
 	|> sort-by -> it
 
 	[arrivals,waiting] = waiting
-	|> partition (car)->
-		car.entry-time<=time
+	|> partition -> it.entry-time<=time
+	
+	EN = EN + arrivals.length
 
 	traveling = concat [traveling,arrivals]
 	|> sort-by (.loc)
@@ -51,16 +52,24 @@ reduce-cars = ({traveling,waiting,signals,time,q,k})->
 		next-car = traveling[(++car-num)%traveling.length]
 		move-car car,next-car,reds
 
+	before = traveling.length
+	traveling = traveling |> filter -> it.cum-move<it.trip-length
+	after = traveling.length
+
+	EX = EX + before - after
+
 	q = q + fold do
 			(a,b)-> a+b.move
 			0
 			traveling
 
-	k = k + (.length) traveling
+	k = k + traveling.length
 
-	{traveling,waiting,k,q} 
+	{traveling,waiting,k,q,EN,EX} 
 
-reduce-memory = ({memory,q,k,time})->
+reduce-memory = ({memory,q,k,time,EN,EX,memory-EN,memory-EX})->
+	memory-EN = [...memory-EN,{time: time, EN}]
+	memory-EX = [...memory-EX,{time: time, EX}]
 	if (time%MEMORY-FREQ) == 0
 		new-memory = 
 			q: q/MEMORY-FREQ/ROAD-LENGTH
@@ -72,7 +81,7 @@ reduce-memory = ({memory,q,k,time})->
 		q = k = 0
 		if memory.length> MAX-MEMORY then memory = tail memory
 			
-	{q,k,memory}
+	{q,k,memory,memory-EN,memory-EX}
 
 reduce-signals = ({signals,time,green,cycle,offset})->
 	# i=0

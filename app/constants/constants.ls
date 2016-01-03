@@ -4,7 +4,7 @@ export
 	COLORS: [mc.light-blue.500, mc.pink.500, mc.purple.500,mc.green.500,mc.red.500,mc.blue.500]
 	NUM-CARS: 500
 	RUSH-LENGTH: 3500
-	TRIP-LENGTH: 300
+	TRIP-LENGTH: 600
 	ROAD-LENGTH: 1000
 	Q0: 1/3
 	KJ: 1
