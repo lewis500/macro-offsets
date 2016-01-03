@@ -3,11 +3,14 @@ require!{
 	'./header':{Header}
 	react: {DOM:{div,p,button}}:react
 	'react-redux': {connect}
+	d3: {timer}
 }
 
-App = ({paused, time, pause-play, tick, reset, traveling, signals})->
-		unless paused 
-			requestAnimationFrame tick
+App = react.create-class do
+	render: ->
+		{paused, time, pause-play, tick, reset, traveling, signals} = @props
+		# unless paused
+		# 	requestAnimationFrame tick
 		div do
 			style: {flex-direction: \column}
 			div do
@@ -16,7 +19,7 @@ App = ({paused, time, pause-play, tick, reset, traveling, signals})->
 					on-click: reset
 					\reset
 				button do
-					on-click: pause-play
+					on-click: @pause-play
 					if paused then \play else \pause
 			div do
 				style: {display: \flex}
@@ -24,6 +27,14 @@ App = ({paused, time, pause-play, tick, reset, traveling, signals})->
 			div do
 				style: {display: \flex}
 				Ring-Road {traveling,signals}
+
+	pause-play: ->
+		if @props.paused
+			timer ~>
+				@props.tick()
+				@props.paused
+		@props.pause-play()
+
 			# ADD OTHER CHARTS AND SUCH LATER ON.
 |> connect do
 	-> it{paused,time,traveling,signals}

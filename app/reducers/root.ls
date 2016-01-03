@@ -40,7 +40,8 @@ root = (state,action)->
 		waiting = [...cars]
 		time = 0
 		paused = true
-		{...state,waiting,time,paused}
+		traveling = []
+		{...state,waiting,time,paused,traveling}
 	case actions.SET-CYCLE
 		cycle = action.cycle
 		{...state,cycle}

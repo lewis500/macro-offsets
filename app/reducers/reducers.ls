@@ -6,7 +6,7 @@ mod = (a, n) -> a - Math.floor(a/n) * n
 
 differ = (a,b)->
 		dx = b - a
-		mod((dx + 500),1000) - 500
+		mod(dx + ROAD-LENGTH/2,ROAD-LENGTH) - ROAD-LENGTH/2
 
 reduce-cars = ({traveling,waiting,signals,time})->
 	reds = signals 
@@ -31,7 +31,6 @@ reduce-cars = ({traveling,waiting,signals,time})->
 				else 
 					new-loc = prev-loc
 			else
-				console.log 'asdf'
 				new-loc = prev-loc + VF
 
 			stopped-light = reds |> find (signal-loc)->
