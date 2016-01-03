@@ -28,7 +28,6 @@ move-car = (car,next-car,reds)->
 		l>prev-loc
 
 	if !(next-red-loc<new-loc)
-		# q+=move
 		{...car,loc:new-loc%ROAD-LENGTH,move}
 	else
 		{...car,loc:prev-loc,move}
@@ -47,15 +46,17 @@ reduce-cars = ({traveling,waiting,signals,time,q,k})->
 	|> sort-by (.loc)
 
 	car-num = 0
-	traveling = traveling |> map (car)->
+	traveling = traveling 
+	|> map (car)->
 		next-car = traveling[(++car-num)%traveling.length]
 		move-car car,next-car,reds
 
-	q = q + do 
-		traveling |> map (.move) |> fold (+),0
+	q = q + fold do
+			(a,b)-> a+b.move
+			0
+			traveling
 
-	k= k + do
-		(.length) traveling
+	k = k + (.length) traveling
 
 	{traveling,waiting,k,q} 
 
@@ -66,7 +67,7 @@ reduce-memory = ({memory,q,k,time})->
 			k: k/MEMORY-FREQ/ROAD-LENGTH
 			id: uniqueId()
 
-		memory  = [...memory, new-memory]
+		memory  = [new-memory] `concat` memory
 
 		q = k = 0
 		if memory.length> MAX-MEMORY then memory = tail memory
@@ -79,4 +80,4 @@ reduce-signals = ({signals,time,green,cycle,offset})->
 		time-in-cycle = time%%cycle
 		{...signal,green: time-in-cycle<=green}
 
-export {reduce-tick}
+export reduce-tick
