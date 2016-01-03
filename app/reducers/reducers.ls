@@ -8,8 +8,8 @@ reduce-time = (state)->
 	time = time+1
 	{...state, time}
 
-reduce-tick = (state)->
-	state |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory
+reduce-tick = ->
+	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory
 
 move-car = (car,next-car,reds)->
 	prev-loc = car.loc
@@ -61,17 +61,17 @@ reduce-cars = (state)->
 
 	EX = EX + before - after
 
+	{...state,traveling,waiting,k,q,EN,EX} 
+
+reduce-memory = (state)->
+	{memory,q,k,time,EN,EX,memory-EN,memory-EX,traveling} = state
+
 	q = q + fold do
 			(a,b)-> a+b.move
 			0
 			traveling
-
 	k = k + traveling.length
 
-	{...state,traveling,waiting,k,q,EN,EX} 
-
-reduce-memory = (state)->
-	{memory,q,k,time,EN,EX,memory-EN,memory-EX} = state
 	if time%10 is 0
 		memory-EN = [...memory-EN,{time: time, val: EN}]
 		memory-EX = [...memory-EX,{time: time, val: EX}]
