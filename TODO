@@ -1,20 +1,17 @@
 
-+ make the chart
-+ calculate the mfd
-
-+ or...only fire the request animation frame on a tick  action
++ draw circles on mfd
++ add velocity chart
 
 SHORT TERM
-+ styles
 + make the width of the road thing dependent on the page-width
 + add exiting
 
 
 MED TERM
++ or...only fire the request animation frame on a tick  action
 + add memory
 + material design
 + create charts
-+ use seperated assignment to clean up the mfd-reducer code
 
 
 LONG TERM

@@ -2,11 +2,10 @@
 {SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
 {filter,map,each,any,min,max,find,partition,concat,tail} = require 'prelude-ls'
 {uniqueId} = require 'lodash'
-mod = (a, n) -> a - Math.floor(a/n) * n
+# mod = (a, n) -> a - Math.floor(a/n) * n
 
 differ = (a,b)->
-		dx = b - a
-		mod(dx + ROAD-LENGTH/2,ROAD-LENGTH) - ROAD-LENGTH/2
+	(b - a + 500)%%1000 - 500
 
 reduce-cars = ({traveling,waiting,signals,time,q,k})->
 	reds = signals 
@@ -54,7 +53,7 @@ reduce-memory = ({memory,q,k,time})->
 	if (time%MEMORY-FREQ) == 0
 		new-memory = 
 			q: q/MEMORY-FREQ/ROAD-LENGTH
-			k: k/MEMORY-FREQ
+			k: k/MEMORY-FREQ/ROAD-LENGTH
 			id: uniqueId()
 
 		memory  = [...memory, new-memory]

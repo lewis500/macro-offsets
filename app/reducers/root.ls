@@ -79,10 +79,11 @@ root = (state,action)->
 		{...state, paused}
 
 	case actions.TICK
-		time = state.time + 1
-		signals = reduce-signals state
-		{traveling,waiting,q,k} = reduce-cars {...state,signals,time}
-		{memory,q,k} = reduce-memory {...state,time,q,k}
+		for i in [til 10]
+			time = state.time + 1
+			signals = reduce-signals state
+			{traveling,waiting,q,k} = reduce-cars {...state,signals,time}
+			{memory,q,k} = reduce-memory {...state,time,q,k}
 		{...state,traveling,waiting,time,signals,memory,q,k}
 
 	default state

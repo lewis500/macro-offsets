@@ -4,7 +4,7 @@ d3 = require 'd3'
 {svg,circle,path,rect,g} = react.DOM
 require '../style/style-charts.scss'
 {connect} = require 'react-redux'
-
+{map} = require 'prelude-ls'
 [width,height] = [250,250]
 
 m = 
@@ -45,7 +45,14 @@ MFD-Chart = react.create-class do
 		d3.select @refs.xAxis	.call xAxis
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
-		{mfd} = @props
+		{mfd,memory} = @props
+		circles = memory |> map (d)->
+			[tx,ty] = [x(d.k), y(d.q)]
+			circle do
+				className: 'memory'
+				key: d.id
+				r: 3
+				transform: "translate(#{tx},#{ty})"
 		svg do
 			do
 				id: 'mfdChart'
@@ -60,6 +67,7 @@ MFD-Chart = react.create-class do
 						className: \bg
 				g className: 'g-paths'
 					path d: line(mfd),className:'mfd'
+				circles
 					# path d: line2(mfd),className: 'vel'
 				g className:'y axis',ref: 'yAxis'
 				g className:'x axis',ref: 'xAxis',transform: "translate(0,#{height})"
@@ -67,7 +75,7 @@ MFD-Chart = react.create-class do
 	place_circle: (d)->
 		[tx,ty] = [x(d.k), y(d.q)]
 		"translate(#{tx},#{ty})"
-|> connect -> it{mfd}
+|> connect -> it{mfd,memory}
 |> react.create-factory
 
 export MFD-Chart
