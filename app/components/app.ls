@@ -5,7 +5,7 @@ require!{
 	'react-redux': {connect}
 }
 
-App = ({paused, time, pause-play, tick, reset, cars, signals})->
+App = ({paused, time, pause-play, tick, reset, traveling, signals})->
 		unless paused 
 			requestAnimationFrame tick
 		div do
@@ -23,10 +23,10 @@ App = ({paused, time, pause-play, tick, reset, cars, signals})->
 				Header {},null
 			div do
 				style: {display: \flex}
-				Ring-Road {cars,signals}
+				Ring-Road {traveling,signals}
 			# ADD OTHER CHARTS AND SUCH LATER ON.
 |> connect do
-	-> it{paused,time,cars,signals}
+	-> it{paused,time,traveling,signals}
 	(dispatch) ->
 		pause-play: -> dispatch type: 'PAUSE-PLAY'
 		tick: -> dispatch type: \TICK

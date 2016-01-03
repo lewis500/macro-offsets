@@ -8,11 +8,10 @@ require! {
 	lodash: {random}
 }
 
-
 # INITIALIZE WAITING CARS
 cars = [til NUM-CARS]
 	|> map (n) -> 
-		entry-loc = random 0,ROAD-LENGTH
+		entry-loc = (random 0,ROAD-LENGTH*1000)/1000
 		res = 
 			loc: entry-loc
 			id: n
@@ -33,9 +32,9 @@ initial-state =
 	green: 50
 	offset: 0
 	num_signals: 5
-	d: 1000/5
 
 root = (state,action)->
+	window.a = state
 	switch action.type
 	case actions.RESET
 		waiting = [...cars]
@@ -46,18 +45,18 @@ root = (state,action)->
 		cycle = action.cycle
 		{...state,cycle}
 	case actions.SET-OFFSET
-		offset = 1/state.num-signals * Math.round action.offset*num-signals
+		offset = action.offset
+		# offset = 1/state.num-signals * Math.round action.offset*num-signals
 		{...state,offset}
 	case actions.SET-GREEN
 		green = action.green
 		{...state,green}
 	case actions.SET-NUM-SIGNALS
 		n = num-signals = action.num-signals
-		d = ROAD-LENGTH
 		offset = 1/n * Math.round offset*n
 		signals = [til num-signals] |> map (i)->
 			res =
-				loc: Math.floor i/num-signals*NUM-CELLS
+				loc: Math.floor i/num-signals*ROAD-LENGTH
 				id: i
 				green: true
 		{...state,signals,num-signals}
@@ -67,8 +66,8 @@ root = (state,action)->
 	case actions.TICK
 		{signals,time,traveling,waiting} = state
 		time = time+1
-		signals = reduce-signals signals,time
-		{traveling,waiting} = reduce-cars traveling,waiting,signals
+		signals = reduce-signals state
+		{traveling,waiting} = reduce-cars state
 		{...state,traveling,waiting,time,signals}
 
 	default state

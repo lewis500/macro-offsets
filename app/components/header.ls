@@ -1,16 +1,14 @@
 require!{
-	'../actions/action-creators': actions
+	'../actions/action-creators': {set-num-signals,set-offset,set-green,set-cycle}
 	'react-redux': {connect}
-	'prelude-ls': {Func:{memoize}}
+	'prelude-ls': {Func:{memoize,curry}}
 	react: {DOM: {div}}:react
-	'../actions/action-creators': actions
 	'./slider': {Slider}
 }
 
-actioner = (action,e)--> 
-	actions[action] +e.target.value
-
-Header = ({num-signals,offset,cycle,green})->
+Header = ({num-signals,offset,cycle,green,dispatch})->
+	actioner = (action,e)--> 
+		+e.target.value|>action|>dispatch
 	div do
 		id: 'trb-header'
 		Slider do
@@ -19,7 +17,7 @@ Header = ({num-signals,offset,cycle,green})->
 				max: 40
 				min: 0
 				step: 1
-				on-change: actioner actions.set-num-signals
+				on-change: actioner set-num-signals
 				label: 'number signals'
 		Slider do
 			do
@@ -27,7 +25,7 @@ Header = ({num-signals,offset,cycle,green})->
 				max: 30
 				min: 0
 				step: 1
-				on-change: actioner actions.set-offset
+				on-change: actioner set-offset
 				label: 'offset'
 		Slider do
 			do
@@ -35,7 +33,7 @@ Header = ({num-signals,offset,cycle,green})->
 				max: 200
 				min: 0
 				step: 5
-				on-change: actioner actions.set-green
+				on-change: actioner set-green
 				label: 'green'
 		Slider do
 			do
@@ -43,7 +41,7 @@ Header = ({num-signals,offset,cycle,green})->
 				max: 200
 				min: 0
 				step: 5
-				on-change: actioner actions.set-cycle
+				on-change: actioner set-cycle
 				label: 'cycle'
 
 Header = Header

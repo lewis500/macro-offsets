@@ -25,5 +25,6 @@ template = react.createElement do
 		# react.create-element DevTools, {}
 
 # WIRE IT UP
-el = document.getElementById 'app' 
+el = document.getElementById 'app'
 react-dom.render template,el
+store.dispatch type: 'SET-NUM-SIGNALS',num-signals: 10
