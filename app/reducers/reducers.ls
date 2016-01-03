@@ -60,7 +60,6 @@ reduce-memory = ({memory,q,k,time})->
 		memory  = [...memory, new-memory]
 
 		q = k = 0
-		# make sure it's not too long
 		if memory.length> MAX-MEMORY then memory = tail memory
 			
 	{q,k,memory}
