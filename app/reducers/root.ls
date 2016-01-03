@@ -3,6 +3,7 @@ mc = require 'material-colors'
 require! {
 	'../actions/action-names': actions
 	'./reducers':{reduce-cars,reduce-signals,reduce-memory}
+	'./mfd-reducer': {reduce-mfd}
 	'../constants/constants': {ROAD-LENGTH,COLORS,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random}
@@ -35,6 +36,7 @@ initial-state =
 	q: 0
 	k: 0
 	memory: []
+	mfd:[]
 
 root = (state,action)->
 	window.a = state
@@ -48,15 +50,18 @@ root = (state,action)->
 
 	case actions.SET-CYCLE
 		cycle = action.cycle
-		{...state,cycle}
+		mfd = reduce-mfd {...state,cycle}
+		{...state,cycle,mfd}
 
 	case actions.SET-OFFSET
 		offset = action.offset
-		{...state,offset}
+		mfd = reduce-mfd {...state,offset}
+		{...state,mfd,offset}
 
 	case actions.SET-GREEN
 		green = action.green
-		{...state,green}
+		mfd = reduce-mfd {...state,green}
+		{...state,green,mfd}
 
 	case actions.SET-NUM-SIGNALS
 		n = num-signals = action.num-signals
@@ -66,7 +71,8 @@ root = (state,action)->
 				loc: Math.floor i/num-signals*ROAD-LENGTH
 				id: i
 				green: true
-		{...state,signals,num-signals}
+		mfd = reduce-mfd {...state,num-signals}
+		{...state,signals,num-signals,mfd}
 
 	case actions.PAUSE-PLAY
 		paused = !state.paused

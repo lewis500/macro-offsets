@@ -3,6 +3,7 @@ d3 = require 'd3'
 {Q0,KJ} = require '../constants/constants'
 {svg,circle,path,rect,g} = react.DOM
 require '../style/style-charts.scss'
+{connect} = require 'react-redux'
 
 [width,height] = [250,250]
 
@@ -44,7 +45,7 @@ MFD-Chart = react.create-class do
 		d3.select @refs.xAxis	.call xAxis
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
-		# {mfd} = @props
+		{mfd} = @props
 		svg do
 			do
 				id: 'mfdChart'
@@ -58,7 +59,7 @@ MFD-Chart = react.create-class do
 						height: height
 						className: \bg
 				g className: 'g-paths'
-					# path d: line(mfd),className:'mfd'
+					path d: line(mfd),className:'mfd'
 					# path d: line2(mfd),className: 'vel'
 				g className:'y axis',ref: 'yAxis'
 				g className:'x axis',ref: 'xAxis',transform: "translate(0,#{height})"
@@ -66,6 +67,7 @@ MFD-Chart = react.create-class do
 	place_circle: (d)->
 		[tx,ty] = [x(d.k), y(d.q)]
 		"translate(#{tx},#{ty})"
+|> connect -> it{mfd}
 |> react.create-factory
 
 export MFD-Chart
