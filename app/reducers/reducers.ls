@@ -3,12 +3,13 @@
 {filter,map,each,any,min,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
 {uniqueId} = require 'lodash'
 
-reduce-tick = ({traveling,waiting,signals,time,q,k,green,offset,cycle,memory,EN,EX,memory-EN,memory-EX})->
-	time = time + 1
-	signals = reduce-signals {signals,time,green,cycle,offset}
-	{traveling,waiting,k,q,EN,EX} = reduce-cars {traveling,waiting,signals,time,q,k,EN,EX}
-	{memory,q,k,memory-EN,memory-EX,EN,EX} = reduce-memory {memory,time,q,k,EN,EX,memory-EN,memory-EX}
-	{traveling,waiting,signals,time,q,k,memory,memory-EN,memory-EX}
+reduce-time = (state)->
+	{time} = state
+	time = time+1
+	{...state, time}
+
+reduce-tick = (state)->
+	state |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory
 
 move-car = (car,next-car,reds)->
 	prev-loc = car.loc
@@ -32,7 +33,9 @@ move-car = (car,next-car,reds)->
 	else
 		{...car,loc:prev-loc,move,cum-move: car.cum-move+move}
 
-reduce-cars = ({traveling,waiting,signals,time,q,k,EN,EX})->
+reduce-cars = (state)->
+	{traveling,waiting,signals,time,q,k,EN,EX} = state
+
 	reds = signals
 	|> filter (.green)>>(not)
 	|> map (.loc)
@@ -65,9 +68,11 @@ reduce-cars = ({traveling,waiting,signals,time,q,k,EN,EX})->
 
 	k = k + traveling.length
 
-	{traveling,waiting,k,q,EN,EX} 
+	{...state,traveling,waiting,k,q,EN,EX} 
 
-reduce-memory = ({memory,q,k,time,EN,EX,memory-EN,memory-EX})->
+reduce-memory = (state)->
+	{memory,q,k,time,EN,EX,memory-EN,memory-EX} = state
+
 	memory-EN = [...memory-EN,{time: time, EN}]
 	memory-EX = [...memory-EX,{time: time, EX}]
 	if (time%MEMORY-FREQ) == 0
@@ -81,12 +86,14 @@ reduce-memory = ({memory,q,k,time,EN,EX,memory-EN,memory-EX})->
 		q = k = 0
 		if memory.length> MAX-MEMORY then memory = tail memory
 			
-	{q,k,memory,memory-EN,memory-EX}
+	{...state,q,k,memory,memory-EN,memory-EX}
 
-reduce-signals = ({signals,time,green,cycle,offset})->
+reduce-signals = (state)->
+	{signals,time,green,cycle,offset} = state
 	# i=0
-	signals |> map (signal)->
+	signals = signals |> map (signal)->
 		time-in-cycle = time%%cycle
 		{...signal,green: time-in-cycle<=green}
+	{...state,signals}
 
 export reduce-tick

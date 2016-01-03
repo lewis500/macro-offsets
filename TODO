@@ -1,10 +1,10 @@
++ use nesting to simplify the structure of what you pass around. make memory one big object.
++ rename the k state variable so it's actually n
 + add cumulative chart
 + add velocity line
++ use an underscore for the prelude functions
 
 
-MAKE PREDITIONS
-+ plot the predicted k and y
-+ have a function for remaking the signals
 
 SHORT TERM
 + make the width of the road thing dependent on the page-width
@@ -17,6 +17,10 @@ MED TERM
 + create charts
 + add offsets in
 + make a move-car function to map over the cars so that reduce-cars isn't so long
+
+MAKE PREDITIONS
++ plot the predicted k and y
++ have a function for remaking the signals
 
 LONG TERM
 + try deku
