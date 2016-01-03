@@ -1,8 +1,9 @@
 + add cumulative chart
-+ draw circles on mfd
 + add velocity line
+
+
+MAKE PREDITIONS
 + plot the predicted k and y
-+ combine the tick reducers
 + have a function for remaking the signals
 
 SHORT TERM
@@ -12,7 +13,6 @@ SHORT TERM
 
 MED TERM
 + or...only fire the request animation frame on a tick  action
-+ add memory
 + material design
 + create charts
 + add offsets in
@@ -20,6 +20,7 @@ MED TERM
 
 LONG TERM
 + try deku
++ simplify the moving logic for cars
 
 
 try out using comparison
