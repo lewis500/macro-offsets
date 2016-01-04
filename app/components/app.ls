@@ -29,7 +29,7 @@ App = react.create-class do
 			div do
 				style: {display: \flex, flex-direction: \row}
 				div do
-					style: {display: \flex}
+					style: {display: \flex, flex-basis: '35%'}
 					Ring-Road {traveling,signals}
 				div do
 					style: {display: \flex}

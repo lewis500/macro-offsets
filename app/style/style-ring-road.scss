@@ -1,11 +1,10 @@
 @import '~material-colors/dist/colors';
-.car{
-	stroke: none;
-}
 
 svg#vis{
-	width: 350px;
-	height: 350px;
+	width: 100%;
+	height: 100%;
+	// width: 480px;
+	// height: 480px;
 }
 
 .axis path,
@@ -18,12 +17,15 @@ svg#vis{
 .car{
 	rx: .2px;
 	ry: .2px;
+	stroke: $md-grey-100;
+	stroke-width: .1px;
 }
 
 .road{
 	fill: none;
 	stroke-width: 5px;
-	stroke: $md-grey-200;
+	// stroke: $md-grey-200;
+	stroke: $md-blue-grey-900;
 }
 
 .label{
@@ -31,9 +33,14 @@ svg#vis{
 }
 
 .signal{
-	fill: $md-red-500;
+	fill: $md-red-300;
+	transition: fill .2s ease-out;
+	transition: transform .2s ease-out;
 }
 
 .signal.green{
-	fill: $md-green-500;
+	fill: $md-light-green-300;
+	transition: transform .2s ease-out;
+	transition: fill .2s ease-out;
+	// transform: scale(1.1,1.1);
 }

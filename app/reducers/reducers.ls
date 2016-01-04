@@ -85,10 +85,12 @@ reduce-memory = (state)->
 	{...state,q,k,memory,memory-EN,memory-EX}
 
 reduce-signals = (state)->
-	{signals,time,green,cycle,offset} = state
-	# i=0
+	{signals,time,green,cycle,offset,num-signals} = state
+	i=0
 	signals = signals |> map (signal)->
-		time-in-cycle = time%%cycle
+		O = if (i+1)<signals.length then i*offset else offset*i/2
+		time-in-cycle = (time - O)%%cycle
+		i++
 		{...signal,green: time-in-cycle<=green}
 	{...state,signals}
 

@@ -12,6 +12,8 @@ MED TERM
 + make a move-car function to map over the cars so that reduce-cars isn't so long
 
 LONG TERM
++ change font
++ make the signals animate when they change
 + make responsive
 + try deku
 + should i do gap-red - SPACE in the move-car function?
