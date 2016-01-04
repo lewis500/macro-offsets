@@ -7,6 +7,7 @@ export
 	TRIP-LENGTH: 300
 	ROAD-LENGTH: 1000
 	Q0: 1/3
+	K0: 1/3
 	KJ: 1
 	VF: 1
 	W: 1/2

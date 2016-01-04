@@ -1,5 +1,5 @@
 {map,each,even,max,min,is-type,sort-by,flatten,Obj} = require 'prelude-ls'
-{SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
+{SPACE,K0,VF,W,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
 {filter,map,each,any,minimum,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
 {uniqueId,find-last} = require 'lodash'
 
@@ -14,7 +14,7 @@ differ = (a,b)->
 	(b - a + 500)%%1000 - 500
 
 reduce-tick = ->
-	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory
+	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory << reduce-offset
 
 move-car = (car,next-car,reds)->
 	x-prev = car.x
@@ -25,9 +25,24 @@ move-car = (car,next-car,reds)->
 	gap-car = if next-car then differ x-prev,next-car.x-old else Infinity
 	move = minimum [VF,gap-car - SPACE,gap-red] |> max _,0
 	x-new = (x-prev + move)%ROAD-LENGTH
-	#SHOULD I DO GAP-RED - SPACE?
 
 	{...car,x:x-new,x-old: x-prev, move,cum-move: car.cum-move+move}
+
+reduce-offset = (state)->
+	{traveling,mfd,cycle,green,num-signals,time} = state
+	k = traveling.length/ROAD-LENGTH
+	[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
+	r = k/K0
+	p = switch 
+		case r<a
+			1/VF
+		case a<=r< b
+			1/ VF * (1 - r) / (1 - green/cycle)
+		default
+			-1/W
+	offset = p * ROAD-LENGTH/num-signals
+
+	{...state,offset}
 
 reduce-cars = (state)->
 	{traveling,waiting,signals,time,q,k,exited} = state
