@@ -53,7 +53,7 @@ MFD-Chart = react.create-class do
 				d: line [a,b]
 				className: 'portrait'
 				key: 'line' ++ b.id
-
+		circle-num = 0
 		circles = memory |> map (d)->
 			[tx,ty] = [x(d.k), y(d.q)]
 			circle do
@@ -61,6 +61,9 @@ MFD-Chart = react.create-class do
 				key: d.id
 				r: 3
 				transform: "translate(#{tx},#{ty})"
+				opacity: do ->
+					2/(1+Math.exp 0.1*(memory.length - (circle-num++)))
+
 		svg do
 			do
 				id: 'mfdChart'

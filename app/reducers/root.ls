@@ -4,7 +4,7 @@ require! {
 	'../actions/action-names': actions
 	'./reducers':{reduce-tick}
 	'./mfd-reducer': {reduce-mfd}
-	# './formula-reducer': {reduce-formula}
+	'./formula-reducer': {reduce-formula}
 	'../constants/constants': {ROAD-LENGTH,COLORS,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random,assign}
@@ -64,21 +64,23 @@ signals-create = (num-signals)->
 			id: i
 			green: true
 
+combined = reduce-mfd >> reduce-formula
+
 root = (state,action)->
 	window.a = state
 	switch action.type
 	case actions.RESET
 		reset state
 	case actions.SET-CYCLE
-		reduce-mfd {...state,cycle: action.cycle}
+		combined {...state,cycle: action.cycle}
 	case actions.SET-OFFSET
-		reduce-mfd {...state,offset: action.offset}
+		combined {...state,offset: action.offset}
 	case actions.SET-GREEN
-		reduce-mfd {...state,green: action.green}
+		combined {...state,green: action.green}
 	case actions.SET-NUM-SIGNALS
 		num-signals = action.num-signals
 		signals = signals-create num-signals 
-		reduce-mfd {...state,num-signals,signals}
+		combined {...state,num-signals,signals}
 	case actions.PAUSE-PLAY
 		paused = !state.paused
 		{...state, paused}

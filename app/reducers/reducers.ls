@@ -15,14 +15,15 @@ differ = (a,b)->
 	(b - a + 500)%%1000 - 500
 
 reduce-tick = ->
-	# a = if it.time%50==0 then reduce-mfd else (b)-> b
-	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory << reduce-offset
+	a = if it.time%250==0 then reduce-mfd else (b)-> b
+	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory 
+		|> reduce-offset |> a
 
 move-car = (car,next-car,reds)->
 	x-prev = car.x
 	move = 0
 	x-red = reds
-	|> find (l)->	l>=x-prev
+	|> find (l)->	l>x-prev
 	gap-red = differ x-prev,x-red
 	gap-car = if next-car then differ x-prev,next-car.x-old else Infinity
 	move = max 0,(minimum [VF,gap-car - SPACE,gap-red] )
@@ -103,7 +104,8 @@ reduce-memory = (state)->
 reduce-signals = (state)->
 	{signals,time,green,cycle,offset,num-signals} = state
 	i=0
-	signals = signals |> map (signal)->
+	signals = signals 
+	|> map (signal)->
 		O = if (i+1)<signals.length then i*offset else offset*i/2
 		time-in-cycle = (time - O)%%cycle
 		i++
