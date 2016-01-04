@@ -6,11 +6,11 @@ require!{
 	'./slider': {Slider}
 }
 
-Header = ({num-signals,offset,cycle,green,dispatch})->
+Header = ({num-signals,offset,cycle,green,dispatch,style})->
 	actioner = (action,e)--> 
 		+e.target.value|>action|>dispatch
 	div do
-		id: 'trb-header'
+		style
 		Slider do
 			do
 				value: num-signals
@@ -22,7 +22,7 @@ Header = ({num-signals,offset,cycle,green,dispatch})->
 		Slider do
 			do
 				value: offset
-				max: 30
+				max: green
 				min: 0
 				step: 1
 				on-change: actioner set-offset
@@ -30,7 +30,7 @@ Header = ({num-signals,offset,cycle,green,dispatch})->
 		Slider do
 			do
 				value: green
-				max: 200
+				max: cycle
 				min: 0
 				step: 5
 				on-change: actioner set-green

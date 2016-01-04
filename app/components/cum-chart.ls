@@ -11,11 +11,11 @@ m =
 	t: 20
 	l: 50
 	b: 30
-	r: 10
+	r: 25
 
 x = d3.scale
 	.linear()
-	.domain [0,7000]
+	.domain [0,5000]
 	.range [0,width]
 
 y = d3.scale
@@ -26,6 +26,7 @@ y = d3.scale
 xAxis = d3.svg
 	.axis()
 	.scale x
+	.ticks 5
 
 yAxis = d3.svg
 	.axis()

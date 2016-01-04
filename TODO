@@ -1,10 +1,6 @@
-IDEAS TO FIX
-+ improve the move-car function
-
-
-MAKE PREDITIONS
++ only take measurements from the ones not next to the transition
 + add velocity line
-+ use an underscore for the prelude functions
++ use an underscore or PL for the prelude functions
 
 MED TERM
 + material design

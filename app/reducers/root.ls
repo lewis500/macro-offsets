@@ -7,7 +7,7 @@ require! {
 	# './formula-reducer': {reduce-formula}
 	'../constants/constants': {ROAD-LENGTH,COLORS,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
-	lodash: {random}
+	lodash: {random,assign}
 }
 
 # INITIALIZE WAITING CARS
@@ -30,6 +30,7 @@ initial-state =
 	paused: true
 	signals: []
 	traveling: []
+	exited: []
 	waiting: [...cars]
 	cycle: 100
 	green: 50
@@ -52,12 +53,9 @@ reset = (state)->
 		waiting = [...cars]
 		time = 0
 		paused = true
-		traveling = []
-		EN = EX = 0
-		memory = []
-		memory-EN = []
-		memory-EX = []
-		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory}
+		EN = EX = k = q = 0
+		memory = []; memory-EN = []; memory-EX = []; exited = []; traveling = [];traveling = [];
+		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory,traveling,exited,k,q}
 
 signals-create = (num-signals)->	
 		signals = [til num-signals] 
@@ -84,7 +82,6 @@ root = (state,action)->
 	case actions.PAUSE-PLAY
 		paused = !state.paused
 		{...state, paused}
-
 	case actions.TICK
 		for i in [til 5]
 			state = reduce-tick state

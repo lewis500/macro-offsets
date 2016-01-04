@@ -10,6 +10,8 @@ require!{
 	'./components/devtools': {DevTools}
 }
 
+require './style/main.scss'
+
 # final-create-store = compose( DevTools.instrument()) createStore
 
 # store = final-create-store root,initial-state

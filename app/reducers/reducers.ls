@@ -30,7 +30,7 @@ move-car = (car,next-car,reds)->
 	{...car,x:x-new,x-old: x-prev, move,cum-move: car.cum-move+move}
 
 reduce-cars = (state)->
-	{traveling,waiting,signals,time,q,k,EN,EX} = state
+	{traveling,waiting,signals,time,q,k,exited} = state
 
 	reds = signals
 	|> filter (.green)>>(not)
@@ -40,8 +40,6 @@ reduce-cars = (state)->
 	[arrivals,waiting] = waiting
 	|> partition -> it.entry-time<=time
 	
-	EN = EN + arrivals.length
-
 	traveling = concat [traveling,arrivals]
 	|> sort-by (.x)
 
@@ -51,17 +49,15 @@ reduce-cars = (state)->
 		next-car = traveling[(++car-num)%traveling.length]
 		move-car car,next-car,reds
 
-	before = traveling.length
-	traveling = traveling |> filter -> it.cum-move<it.trip-length
-	after = traveling.length
+	[traveling,exiting] = traveling 
+	|> partition -> it.cum-move<=it.trip-length
 
-	EX = EX + before - after
+	exited = concat [exited,exiting]
 
-	{...state,traveling,waiting,k,q,EN,EX} 
+	{...state,traveling,waiting,exited} 
 
 reduce-memory = (state)->
-	{memory,q,k,time,EN,EX,memory-EN,memory-EX,traveling} = state
-
+	{memory,q,k,time,memory-EN,memory-EX,EN,EX,traveling,arrivals,exited} = state
 	q = q + fold do
 			(a,b)-> a+b.move
 			0
@@ -69,8 +65,11 @@ reduce-memory = (state)->
 	k = k + traveling.length
 
 	if time%10 is 0
+		EN = traveling.length + exited.length
+		EX = exited.length
 		memory-EN = [...memory-EN,{time: time, val: EN}]
 		memory-EX = [...memory-EX,{time: time, val: EX}]
+
 	if (time%MEMORY-FREQ) == 0
 		new-memory = 
 			q: q/MEMORY-FREQ/ROAD-LENGTH

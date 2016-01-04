@@ -11,21 +11,27 @@ require!{
 App = react.create-class do
 	render: ->
 		{paused, time, pause-play, tick, reset, traveling, signals} = @props
-		# unless paused
-		# 	requestAnimationFrame tick
 		div do
 			style: {flex-direction: \column}
 			div do
-				style: {display: \flex, flex-direction: \row}
+				style:
+					display: \flex
+					flex-direction: \row
+					width: '300px'
+					justify-content: 'space-around'
 				button do
-					on-click: reset
+					do
+						className: 'mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect'
+						on-click: reset
+						style: {display: \flex}
 					\reset
 				button do
-					on-click: @pause-play
+					do
+						className: 'mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect'
+						on-click: @pause-play
+						style: {display: \flex}
 					if paused then \play else \pause
-			div do
-				style: {display: \flex}
-				Header {},null
+			Header {display: \flex}
 			div do
 				style: {display: \flex, flex-direction: \row}
 				div do
