@@ -8,6 +8,7 @@ MED TERM
 + make a move-car function to map over the cars so that reduce-cars isn't so long
 
 LONG TERM
++ to make hte star go faster, cache a scale that maps points along the length to coordinates instead of recalculating every time. then just pass in the object's x value and get a coordinate.
 + change font
 + make the signals animate when they change
 + make responsive

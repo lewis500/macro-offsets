@@ -34,12 +34,12 @@ svg#vis{
 
 .signal{
 	fill: $md-red-200;
-	transition: fill .2s ease-out;
-	transition: transform .2s ease-out;
+	// transition: fill .2s ease-out;
+	// transition: transform .2s ease-out;
 }
 
 .signal.green{
 	fill: $md-light-green-300;
-	transition: transform .2s ease-out;
-	transition: fill .2s ease-out;
+	// transition: transform .2s ease-out;
+	// transition: fill .2s ease-out;
 }
