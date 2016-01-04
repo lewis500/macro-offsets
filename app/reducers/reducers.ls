@@ -10,6 +10,9 @@ reduce-time = (state)->
 
 	{...state, time,formula-pred}
 
+differ = (a,b)->
+	(b - a + 500)%%1000 - 500
+
 reduce-tick = ->
 	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory
 
@@ -18,17 +21,13 @@ move-car = (car,next-car,reds)->
 	move = 0
 	x-red = reds
 	|> find (l)->	l>=x-prev
-	gap-red = (x-red - x-prev + 500)%%1000 - 500
-
-	if next-car
-		gap-car = (next-car.x - x-prev + 500)%%1000 - 500
-	else
-		gap-car = Infinity
-	move = max (minimum [VF,gap-car - SPACE,gap-red]),0
+	gap-red = differ x-prev,x-red
+	gap-car = if next-car then differ x-prev,next-car.x-old else Infinity
+	move = minimum [VF,gap-car - SPACE,gap-red] |> max _,0
 	x-new = (x-prev + move)%ROAD-LENGTH
+	#SHOULD I DO GAP-RED - SPACE?
 
-
-	{...car,x:x-new,move,cum-move: car.cum-move+move}
+	{...car,x:x-new,x-old: x-prev, move,cum-move: car.cum-move+move}
 
 reduce-cars = (state)->
 	{traveling,waiting,signals,time,q,k,EN,EX} = state

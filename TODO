@@ -14,6 +14,7 @@ MED TERM
 LONG TERM
 + make responsive
 + try deku
++ should i do gap-red - SPACE in the move-car function?
 + or...only fire the request animation frame on a tick  action
 
 + have a function for remaking the signals

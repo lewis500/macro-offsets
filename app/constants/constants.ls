@@ -10,6 +10,6 @@ export
 	KJ: 1
 	VF: 1
 	W: 1/2
-	SPACE: 2
+	SPACE: 1
 	MAX-MEMORY: 3
 	MEMORY-FREQ: 100
