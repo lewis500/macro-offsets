@@ -38,6 +38,8 @@ reduce-mfd = (state)->
 	table = ['forward','backward'] |> concat-map (direction)->
 		loop-over-entries {d,cycle,green,offset,direction}
 	mfd = _.range 0.01,1.01,0.01 |> map find-min _,table
-	{...state,mfd} |> reduce-formula
+	res = {...state,mfd} |> reduce-formula
+	console.log res
+	res
 
 export reduce-mfd

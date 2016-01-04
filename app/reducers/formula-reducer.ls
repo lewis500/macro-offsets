@@ -1,6 +1,7 @@
-{map,partition,filter,each,concat} = require 'prelude-ls'
+{map,partition,filter,each,concat,fold,scan} = require 'prelude-ls'
 d3 = require 'd3'
 {ROAD-LENGTH} = require '../constants/constants'
+_ = require 'lodash'
 
 reduce-formula = (state)->
 	{cars,mfd} = state
@@ -9,20 +10,20 @@ reduce-formula = (state)->
 		.range( mfd |> map (.v))
 
 	waiting = [...cars]
-	res = []
 	traveling = []
 	rates = []
+	res = []
 	time = 0
-	while (waiting.length>0 or traveling.length>0) and time<6000
+	while (waiting.length>0 or traveling.length>0) and time<5000
+		n0 = traveling.length
 		v = V n0/ROAD-LENGTH
 		d = v
-		n0 = traveling.length
 
 		traveling = traveling 
 		|> map (car)->
-			{...car,cum-moved: car.cum-moved+d}
+			{...car,cum-move: car.cum-move+d}
 		|> filter (car)->
-			car.cum-moved<=car.trip-length
+			car.cum-move<=car.trip-length
 
 		[arrivals,waiting] = waiting
 		|> partition -> it.entry-time<=time
@@ -32,23 +33,22 @@ reduce-formula = (state)->
 		q = v*n0/ROAD-LENGTH
 		k = n0/ROAD-LENGTH
 
-		if time%10==0
+		res.push {time,num-entries,num-exits}
+		if time%10 is 0
 			rates.push {time,q,k}
-			res.push {time, num-entries, num-exits}
-			
 		traveling = concat [traveling,arrivals]
-
 		time++
 
-	cum-entries = [{val: 0, time:-1}]
-	cum-exits = [{val: 0,time: -1}]
-	res |> each (e)->
+	cum-entries = [{time: -1, val: 0}]
+	cum-exits = [{time: -1, val:0}]
+	for e in res
 		cum-entries.push do
-			val: cum-entries[cum-entries.length-1].val + e.num-entries
+			val: cum-entries[* - 1]?.val + e.num-entries
 			time: e.time 
 		cum-exits.push do
-			val: cum-exits[cum-exits.length-1].val + e.num-exits
+			val: cum-exits[* - 1]?.val + e.num-exits
 			time: e.time
+	console.log cum-entries
 
 	{...state,formula-EN: cum-entries, formula-EX: cum-exits, rates}
 
