@@ -15,7 +15,7 @@ cars = [til NUM-CARS]
 	|> map (n) -> 
 		entry-loc = (random 0,ROAD-LENGTH*1000)/1000
 		res = 
-			loc: entry-loc
+			x: entry-loc
 			id: n
 			fill: sample COLORS
 			trip-length: TRIP-LENGTH
@@ -62,7 +62,7 @@ reset = (state)->
 signals-create = (num-signals)->	
 		signals = [til num-signals] 
 		|> map (i)->
-			loc: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
+			x: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
 			id: i
 			green: true
 

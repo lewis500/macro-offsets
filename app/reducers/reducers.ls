@@ -14,33 +14,33 @@ reduce-tick = ->
 	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory
 
 move-car = (car,next-car,reds)->
-	prev-loc = car.loc
+	x-prev = car.x
 	move = 0
 	if next-car
-		gap =( next-car.loc - prev-loc + 500)%%1000 - 500
+		gap =( next-car.x - x-prev + 500)%%1000 - 500
 		if gap>SPACE
 			move = min(VF,gap)
-			new-loc = prev-loc + move
+			x-new = x-prev + move
 		else 
-			new-loc = prev-loc
+			x-new = x-prev
 	else
 		move = VF
-		new-loc = prev-loc + move
+		x-new = x-prev + move
 
-	next-red-loc = reds
-	|> find (l)->	l>prev-loc
+	next-red-x = reds
+	|> find (l)->	l>x-prev
 
-	if !(next-red-loc<new-loc)
-		{...car,loc:new-loc%ROAD-LENGTH,move,cum-move: car.cum-move+move}
+	if !(next-red-x<x-new)
+		{...car,x:x-new%ROAD-LENGTH,move,cum-move: car.cum-move+move}
 	else
-		{...car,loc:prev-loc,move,cum-move: car.cum-move+move}
+		{...car,x:x-prev,move,cum-move: car.cum-move+move}
 
 reduce-cars = (state)->
 	{traveling,waiting,signals,time,q,k,EN,EX} = state
 
 	reds = signals
 	|> filter (.green)>>(not)
-	|> map (.loc)
+	|> map (.x)
 	|> sort-by -> it
 
 	[arrivals,waiting] = waiting
@@ -49,7 +49,7 @@ reduce-cars = (state)->
 	EN = EN + arrivals.length
 
 	traveling = concat [traveling,arrivals]
-	|> sort-by (.loc)
+	|> sort-by (.x)
 
 	car-num = 0
 	traveling = traveling 

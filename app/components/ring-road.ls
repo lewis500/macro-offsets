@@ -30,8 +30,8 @@ RingRoad = ({traveling,signals})->
 							height: 0.3
 							width: 0.4
 							transform: do ->
-								loc = car.loc/ROAD-LENGTH*360
-								"rotate(#{loc}) translate(0,50)"
+								x = car.x/ROAD-LENGTH*360
+								"rotate(#{x}) translate(0,50)"
 							fill: car.fill
 				signals |> map (signal)->
 					rect do
@@ -42,7 +42,7 @@ RingRoad = ({traveling,signals})->
 							height: 2
 							y: -1
 							transform: do ->
-								loc = signal.loc/ROAD-LENGTH*360
-								"rotate(#{loc}) translate(0,50)"
+								x = signal.x/ROAD-LENGTH*360
+								"rotate(#{x}) translate(0,50)"
 
 export RingRoad
