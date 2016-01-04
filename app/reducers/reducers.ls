@@ -1,12 +1,14 @@
 {map,each,even,max,min,is-type,sort-by,flatten,Obj} = require 'prelude-ls'
 {SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
 {filter,map,each,any,min,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
-{uniqueId} = require 'lodash'
+{uniqueId,find-last} = require 'lodash'
 
 reduce-time = (state)->
-	{time} = state
+	{time,rates} = state
 	time = time+1
-	{...state, time}
+	formula-pred = find-last rates, -> it.time<=time
+
+	{...state, time,formula-pred}
 
 reduce-tick = ->
 	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory

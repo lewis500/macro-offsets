@@ -46,6 +46,7 @@ initial-state =
 	formula-EN: []
 	formula-EX: []
 	rates: []
+	formula-pred: {q:0,k:0,v:0}
 
 reset = (state)->
 		waiting = [...cars]
