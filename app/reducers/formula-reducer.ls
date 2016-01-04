@@ -12,12 +12,13 @@ reduce-formula = (state)->
 	waiting = [...cars]
 	traveling = []
 	rates = []
-	res = []
+	# res = []
 	time = 0
+	step = 10
 	while (waiting.length>0 or traveling.length>0) and time<5000
 		n0 = traveling.length
 		v = V n0/ROAD-LENGTH
-		d = v
+		d = v*step
 
 		traveling = traveling 
 		|> map (car)->
@@ -33,22 +34,22 @@ reduce-formula = (state)->
 		q = v*n0/ROAD-LENGTH
 		k = n0/ROAD-LENGTH
 
-		res.push {time,num-entries,num-exits}
-		if time%10 is 0
-			rates.push {time,q,k}
+		rates.push {time,q,k,num-entries,num-exits}
 		traveling = concat [traveling,arrivals]
-		time++
+		time+=step
 
-	cum-entries = [{time: -1, val: 0}]
-	cum-exits = [{time: -1, val:0}]
-	for e in res
-		cum-entries.push do
-			val: cum-entries[* - 1]?.val + e.num-entries
-			time: e.time 
-		cum-exits.push do
-			val: cum-exits[* - 1]?.val + e.num-exits
-			time: e.time
-	console.log cum-entries
+	cum-entries = scan do
+		(a,b)->
+			val: a.val + b.num-entries
+			time: b.time
+		time: -1, val: 0
+		rates
+	cum-exits = scan do
+		(a,b)->
+			val: a.val + b.num-exits
+			time: b.time
+		time:-1,val:0
+		rates
 
 	{...state,formula-EN: cum-entries, formula-EX: cum-exits, rates}
 
