@@ -17,8 +17,9 @@ App = react.create-class do
 				style:
 					display: \flex
 					flex-direction: \row
-					width: '300px'
+					width: \300px
 					justify-content: 'space-around'
+					margin-bottom: \20px
 				button do
 					do
 						className: 'mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect'
@@ -35,7 +36,7 @@ App = react.create-class do
 			div do
 				style: {display: \flex, flex-direction: \row}
 				div do
-					style: {display: \flex, flex-basis: '35%'}
+					style: {display: \flex, flex-basis: \35%}
 					Ring-Road {traveling,signals}
 				div do
 					style: {display: \flex}
