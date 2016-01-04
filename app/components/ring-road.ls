@@ -15,10 +15,12 @@ RingRoad = react.create-class do
 	component-did-mount: ->
 		road = @refs.road
 		l = road.getTotalLength()
+		xs = for i til ROAD-LENGTH by 5
+			i
 		scale = d3.scale.linear()
-			.domain [til ROAD-LENGTH]
+			.domain xs
 			.range do ->
-				[til ROAD-LENGTH]|>map (x)->
+				xs|>map (x)->
 					p =  x/ROAD-LENGTH*l |> road.getPointAtLength 
 					p1 = (x+0.1)/ROAD-LENGTH*l |> road.getPointAtLength 
 					theta = 180/ Math.PI * Math.atan (p1.y - p.y)/(p1.x - p.x)
@@ -30,9 +32,6 @@ RingRoad = react.create-class do
 		done: false
 
 	placer: (x)->
-		# p =  x/ROAD-LENGTH*@state.road-length |> @refs.road.getPointAtLength 
-		# p1 = (x+0.1)/ROAD-LENGTH*@state.road-length |> @refs.road.getPointAtLength 
-		# theta = 180/ Math.PI * Math.atan (p1.y - p.y)/(p1.x - p.x)
 		a = @state.scale x
 		"translate(#{a.x},#{a.y}) rotate(#{a.theta})"
 

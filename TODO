@@ -1,23 +1,11 @@
 + only take measurements from the ones not next to the transition
 + add velocity line
 + use an underscore or PL for the prelude functions
-
-MED TERM
-+ material design
-+ add offsets in
-+ make a move-car function to map over the cars so that reduce-cars isn't so long
++ try using memoize on certain stateless functions
 
 LONG TERM
-+ to make hte star go faster, cache a scale that maps points along the length to coordinates instead of recalculating every time. then just pass in the object's x value and get a coordinate.
-+ change font
 + make the signals animate when they change
-+ make responsive
 + try deku
-+ should i do gap-red - SPACE in the move-car function?
-+ or...only fire the request animation frame on a tick  action
++ only fire the request animation frame on a tick  action
 
-+ have a function for remaking the signals
-+ rename the k state variable so it's actually n
-+ simplify the moving logic for cars
-
-try out using comparison
+trying using ^^ instead of ... to copy objects

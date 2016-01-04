@@ -64,7 +64,7 @@ reduce-memory = (state)->
 			traveling
 	k = k + traveling.length
 
-	if time%10 is 0
+	if time%MEMORY-FREQ is 0
 		EN = traveling.length + exited.length
 		EX = exited.length
 		memory-EN = [...memory-EN,{time: time, val: EN}]
