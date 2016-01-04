@@ -34,7 +34,7 @@ initial-state =
 	cycle: 100
 	green: 50
 	offset: 0
-	num_signals: 5
+	num-signals: 30
 	q: 0
 	k: 0
 	memory: []
@@ -58,7 +58,13 @@ reset = (state)->
 		memory-EN = []
 		memory-EX = []
 		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory}
-	
+
+signals-create = (num-signals)->	
+		signals = [til num-signals] 
+		|> map (i)->
+			loc: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
+			id: i
+			green: true
 
 root = (state,action)->
 	window.a = state
@@ -73,18 +79,14 @@ root = (state,action)->
 		reduce-mfd {...state,green: action.green}
 	case actions.SET-NUM-SIGNALS
 		num-signals = action.num-signals
-		signals = [til num-signals] 
-		|> map (i)->
-			loc: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
-			id: i
-			green: true
+		signals = signals-create num-signals 
 		reduce-mfd {...state,num-signals,signals}
 	case actions.PAUSE-PLAY
 		paused = !state.paused
 		{...state, paused}
 
 	case actions.TICK
-		for i in [til 20]
+		for i in [til 5]
 			state = reduce-tick state
 		state
 	default state

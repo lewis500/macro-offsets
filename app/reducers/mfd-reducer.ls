@@ -1,7 +1,7 @@
 d3 = require 'd3'
 _ = require 'lodash'
 {VF,Q0,KJ,W,ROAD-LENGTH} = require '../constants/constants'
-{map,concat-map} = require 'prelude-ls'
+{map,concat-map,concat} = require 'prelude-ls'
 {reduce-formula} = require './formula-reducer'
 
 loop-over-entries = (it)->
@@ -28,6 +28,7 @@ get-entry = ({i,d,cycle,green,offset})->
 find-min = (k,table)->
 	costs = table |> map (e)->
 		(e.c + e.x*k)/e.t 
+		# |> concat _
 	q = _.min [...costs,VF*k,W*(KJ - k)]
 	v = if k>0 then q/k else 0
 	{k,q,v}
@@ -38,8 +39,6 @@ reduce-mfd = (state)->
 	table = ['forward','backward'] |> concat-map (direction)->
 		loop-over-entries {d,cycle,green,offset,direction}
 	mfd = _.range 0.01,1.01,0.01 |> map find-min _,table
-	res = {...state,mfd} |> reduce-formula
-	console.log res
-	res
+	{...state,mfd} |> reduce-formula
 
 export reduce-mfd

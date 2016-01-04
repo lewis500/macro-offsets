@@ -1,7 +1,6 @@
 {map,partition,filter,each,concat,fold,scan} = require 'prelude-ls'
 d3 = require 'd3'
 {ROAD-LENGTH} = require '../constants/constants'
-_ = require 'lodash'
 
 reduce-formula = (state)->
 	{cars,mfd} = state
@@ -12,9 +11,8 @@ reduce-formula = (state)->
 	waiting = [...cars]
 	traveling = []
 	rates = []
-	# res = []
 	time = 0
-	step = 10
+	step = 20 
 	while (waiting.length>0 or traveling.length>0) and time<5000
 		n0 = traveling.length
 		v = V n0/ROAD-LENGTH

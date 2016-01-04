@@ -1,27 +1,21 @@
-MAKE PREDITIONS
-+ plot the predicted k and y
-+ have a function for remaking the signals
 
+
+
+MAKE PREDITIONS
 + add velocity line
 + use an underscore for the prelude functions
 
-
-
-SHORT TERM
-
-
 MED TERM
-+ or...only fire the request animation frame on a tick  action
 + material design
-+ create charts
-save memory by not recording the cumulative at every moment
 + add offsets in
 + make a move-car function to map over the cars so that reduce-cars isn't so long
-+ make the width of the road thing dependent on the page-width
-
 
 LONG TERM
++ make responsive
 + try deku
++ or...only fire the request animation frame on a tick  action
+
++ have a function for remaking the signals
 + rename the k state variable so it's actually n
 + simplify the moving logic for cars
 
