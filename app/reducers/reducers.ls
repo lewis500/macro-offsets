@@ -1,6 +1,6 @@
 {map,each,even,max,min,is-type,sort-by,flatten,Obj} = require 'prelude-ls'
 {SPACE,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
-{filter,map,each,any,min,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
+{filter,map,each,any,minimum,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
 {uniqueId,find-last} = require 'lodash'
 
 reduce-time = (state)->
@@ -16,24 +16,19 @@ reduce-tick = ->
 move-car = (car,next-car,reds)->
 	x-prev = car.x
 	move = 0
+	x-red = reds
+	|> find (l)->	l>=x-prev
+	gap-red = (x-red - x-prev + 500)%%1000 - 500
+
 	if next-car
-		gap =( next-car.x - x-prev + 500)%%1000 - 500
-		if gap>SPACE
-			move = min(VF,gap)
-			x-new = x-prev + move
-		else 
-			x-new = x-prev
+		gap-car = (next-car.x - x-prev + 500)%%1000 - 500
 	else
-		move = VF
-		x-new = x-prev + move
+		gap-car = Infinity
+	move = max (minimum [VF,gap-car - SPACE,gap-red]),0
+	x-new = (x-prev + move)%ROAD-LENGTH
 
-	next-red-x = reds
-	|> find (l)->	l>x-prev
 
-	if !(next-red-x<x-new)
-		{...car,x:x-new%ROAD-LENGTH,move,cum-move: car.cum-move+move}
-	else
-		{...car,x:x-prev,move,cum-move: car.cum-move+move}
+	{...car,x:x-new,move,cum-move: car.cum-move+move}
 
 reduce-cars = (state)->
 	{traveling,waiting,signals,time,q,k,EN,EX} = state
