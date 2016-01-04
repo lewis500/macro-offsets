@@ -1,7 +1,7 @@
 react = require 'react'
 d3 = require 'd3'
 {Q0,KJ} = require '../constants/constants'
-{svg,circle,path,rect,g} = react.DOM
+{svg,circle,path,rect,g,path} = react.DOM
 require '../style/style-charts.scss'
 {connect} = require 'react-redux'
 {map} = require 'prelude-ls'
@@ -46,6 +46,14 @@ MFD-Chart = react.create-class do
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
 		{mfd,memory,formula-pred} = @props
+		i = 0
+		lines = memory[1 til ] |> map (b)->
+			a = memory[i++]
+			path do
+				d: line [a,b]
+				className: 'portrait'
+				key: 'line' ++ b.id
+
 		circles = memory |> map (d)->
 			[tx,ty] = [x(d.k), y(d.q)]
 			circle do
@@ -68,6 +76,7 @@ MFD-Chart = react.create-class do
 				g className: 'g-paths'
 					path d: line(mfd),className:'mfd'
 				circles
+				lines
 				circle do
 					className: 'memory formula'
 					r: 3

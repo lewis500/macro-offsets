@@ -12,7 +12,7 @@ reduce-formula = (state)->
 	traveling = []
 	rates = []
 	time = 0
-	step = 20 
+	step = 10 
 	while (waiting.length>0 or traveling.length>0) and time<5000
 		n0 = traveling.length
 		v = V n0/ROAD-LENGTH

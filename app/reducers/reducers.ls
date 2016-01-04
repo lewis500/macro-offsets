@@ -2,6 +2,7 @@
 {SPACE,K0,VF,W,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
 {filter,map,each,any,minimum,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
 {uniqueId,find-last} = require 'lodash'
+{reduce-mfd} = require './mfd-reducer'
 
 reduce-time = (state)->
 	{time,rates} = state
@@ -14,6 +15,7 @@ differ = (a,b)->
 	(b - a + 500)%%1000 - 500
 
 reduce-tick = ->
+	# a = if it.time%50==0 then reduce-mfd else (b)-> b
 	it |> reduce-time << reduce-signals << reduce-cars << reduce-memory << reduce-offset
 
 move-car = (car,next-car,reds)->
@@ -23,7 +25,7 @@ move-car = (car,next-car,reds)->
 	|> find (l)->	l>=x-prev
 	gap-red = differ x-prev,x-red
 	gap-car = if next-car then differ x-prev,next-car.x-old else Infinity
-	move = minimum [VF,gap-car - SPACE,gap-red] |> max _,0
+	move = max 0,(minimum [VF,gap-car - SPACE,gap-red] )
 	x-new = (x-prev + move)%ROAD-LENGTH
 
 	{...car,x:x-new,x-old: x-prev, move,cum-move: car.cum-move+move}
@@ -79,7 +81,7 @@ reduce-memory = (state)->
 			traveling
 	k = k + traveling.length
 
-	if time%MEMORY-FREQ is 0
+	if time%25 is 0
 		EN = traveling.length + exited.length
 		EX = exited.length
 		memory-EN = [...memory-EN,{time: time, val: EN}]

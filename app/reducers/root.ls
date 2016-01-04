@@ -83,7 +83,7 @@ root = (state,action)->
 		paused = !state.paused
 		{...state, paused}
 	case actions.TICK
-		for i in [til 5]
+		for i in [til 7]
 			state = reduce-tick state
 		state
 	default state
