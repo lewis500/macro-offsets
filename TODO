@@ -12,5 +12,7 @@ LONG TERM
 + make the signals animate when they change
 + try deku
 + only fire the request animation frame on a tick  action
-
++ take care of extreme edge case where two waiting cars 
++ try checking free locations by making a big array of all the cells and setting the taken ones to true. that way, when a cell is added you can just set it to true. only works for whole-number locations, though.
+want o enter the same place at the same time
 trying using ^^ instead of ... to copy objects
