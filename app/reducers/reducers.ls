@@ -24,7 +24,7 @@ move-car = (car,next-car,reds)->
 	|> pl.find (l)->	l>x-prev
 	gap-red = differ x-prev,x-red
 	gap-car = if next-car then differ x-prev,next-car.x-old else Infinity
-	move = pl.max 0,(pl.minimum [VF,gap-car - SPACE,gap-red] )
+	move = pl.max 0,(pl.minimum [VF,gap-car - SPACE,gap-red - SPACE] )
 	x-new = (x-prev + move)%ROAD-LENGTH
 
 	{...car,x:x-new,x-old: x-prev, move,cum-move: car.cum-move+move}
@@ -53,28 +53,29 @@ reduce-cars = (state)->
 	|> pl.map (.x)
 	|> pl.sort-by -> it
 
-	# gaps = traveling 
-	# |> _.map _,(car,i)->
-	# 	gap = differ car.x,traveling[(i+1)%traveling.length].x |> (%%ROAD-LENGTH)
-	# 	x = (car.x + gap/2)%ROAD-LENGTH
-	# 	{gap,x}
-	# |> pl.filter (d)-> d.gap>=(2*SPACE)
-
 	[arrivals,waiting] = waiting
 	|> pl.partition (d)-> 
 		time-test = d.entry-time<=time
-		# if !time-test
-		# 	false
-		# else
-		# 	traveling |> _.find _,(car,i,k)->
-		# 		gap1 = differ car.x,d.x |> Math.abs 
-		# 		if (car2=k[(i+1)%k.length])
-		# 			gap2 = differ car2.x,d.x |> Math.abs 
-		# 			gap1 < SPACE and gap2 <SPACE
-		# 		else
-		# 			gap1 < SPACE
-		# 	!(typeof traveling == 'undefined' )
-
+		if !time-test
+			return false
+		else
+			if traveling.length is 0
+				return true
+			car1 = traveling 
+				|> _.find-last _, (car)->
+					car.x < d.x
+			if car1
+				gap1 = differ( car1.x,d.x) |> Math.abs 
+				if gap1<=SPACE
+					return false
+			car2 = traveling 
+				|> _.find _, (car)->
+					car.x > d.x
+			if car2
+				gap2 = differ( car2.x,d.x) |> Math.abs 
+				if gap2<=SPACE
+					return false
+			return true
 
 	traveling = pl.concat [traveling,arrivals]
 	|> pl.sort-by (.x)
