@@ -10,7 +10,11 @@ reduce-time = (state)->
 	{...state, time,formula-pred}
 
 differ = (a,b)->
-	(b - a + 500)%%1000 - 500
+	res = (b - a + 500)%%1000 - 500
+	if res<0
+		360 + res
+	else
+		res
 
 reduce-tick = ->
 	a = if it.time%250==0 then reduce-mfd else (b)-> b
@@ -23,7 +27,7 @@ move-car = (car,next-car,reds)->
 	x-red = reds
 	|> pl.find (l)->	l>x-prev
 	gap-red = differ x-prev,x-red
-	gap-car = if (next-car and next-car!=car) then differ x-prev,next-car.x-old else Infinity
+	gap-car = if (next-car and next-car.id!=car.id) then differ x-prev,next-car.x-old else Infinity
 	move = pl.max 0,(pl.minimum [VF,gap-car - SPACE,gap-red - SPACE] )
 	x-new = (x-prev + move)%ROAD-LENGTH
 

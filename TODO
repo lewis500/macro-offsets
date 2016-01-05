@@ -1,3 +1,4 @@
++ catch edge case where the cars loop around
 + get rid of all this car-num++ stuff. just use the lodash version of map.
 + simplify all these constants
 + have a button to turn macro offsets on and off
