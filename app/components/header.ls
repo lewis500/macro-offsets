@@ -22,15 +22,15 @@ Header = ({num-signals,offset,cycle,green,dispatch,style})->
 		Slider do
 			do
 				value: offset
-				max: cycle
-				min: -cycle
+				max: 100
+				min: -100
 				step: 1
 				on-change: actioner set-offset
 				label: 'offset'
 		Slider do
 			do
 				value: green
-				max: cycle
+				max: 100
 				min: 0
 				step: 5
 				on-change: actioner set-green

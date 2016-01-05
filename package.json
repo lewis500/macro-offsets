@@ -1,7 +1,7 @@
 {
   "name": "livescript",
   "version": "1.0.0",
-  "description": "live script ",
+  "description": "macro-offsets",
   "main": "index.js",
   "scripts": {
     "local": "webpack --color --progress --watch",

@@ -11,18 +11,19 @@ require! {
 }
 
 # INITIALIZE WAITING CARS
+# asdf = sample [0 til (ROAD-LENGTH*1000)]
 cars = [til NUM-CARS]
-	|> map (n) -> 
-		entry-loc = (random 0,ROAD-LENGTH*1000)/1000
+	|> map (i) -> 
+		entry-loc = random(0,ROAD-LENGTH)
 		res = 
 			x: entry-loc
-			id: n
+			id: i
 			fill: sample COLORS
 			trip-length: TRIP-LENGTH
 			exited: false
 			move: 0
 			cum-move: 0
-			entry-time: RUSH-LENGTH*n/NUM-CARS
+			entry-time: RUSH-LENGTH*i/NUM-CARS
 
 initial-state = 
 	time: 0
@@ -37,7 +38,7 @@ initial-state =
 	offset: 0
 	num-signals: 30
 	q: 0
-	k: 0
+	n: 0
 	memory: []
 	mfd:[]
 	EN: 0

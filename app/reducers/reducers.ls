@@ -1,14 +1,12 @@
-{map,each,even,max,min,is-type,sort-by,flatten,Obj} = require 'prelude-ls'
+pl = require 'prelude-ls'
+_ = require 'lodash'
 {SPACE,K0,VF,W,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
-{filter,map,each,any,minimum,fold,max,find,partition,sort-by,concat,tail} = require 'prelude-ls'
-{uniqueId,find-last} = require 'lodash'
 {reduce-mfd} = require './mfd-reducer'
 
 reduce-time = (state)->
 	{time,rates} = state
-	time = time+1
-	formula-pred = find-last rates, -> it.time<=time
-
+	time = time + 1
+	formula-pred = _.find-last rates, -> it.time<=time
 	{...state, time,formula-pred}
 
 differ = (a,b)->
@@ -23,10 +21,10 @@ move-car = (car,next-car,reds)->
 	x-prev = car.x
 	move = 0
 	x-red = reds
-	|> find (l)->	l>x-prev
+	|> pl.find (l)->	l>x-prev
 	gap-red = differ x-prev,x-red
 	gap-car = if next-car then differ x-prev,next-car.x-old else Infinity
-	move = max 0,(minimum [VF,gap-car - SPACE,gap-red] )
+	move = pl.max 0,(pl.minimum [VF,gap-car - SPACE,gap-red] )
 	x-new = (x-prev + move)%ROAD-LENGTH
 
 	{...car,x:x-new,x-old: x-prev, move,cum-move: car.cum-move+move}
@@ -48,39 +46,60 @@ reduce-offset = (state)->
 	{...state,offset}
 
 reduce-cars = (state)->
-	{traveling,waiting,signals,time,q,k,exited} = state
+	{traveling,waiting,signals,time,exited} = state
 
 	reds = signals
-	|> filter (.green)>>(not)
-	|> map (.x)
-	|> sort-by -> it
+	|> pl.filter (.green)>>(not)
+	|> pl.map (.x)
+	|> pl.sort-by -> it
+
+	# gaps = traveling 
+	# |> _.map _,(car,i)->
+	# 	gap = differ car.x,traveling[(i+1)%traveling.length].x |> (%%ROAD-LENGTH)
+	# 	x = (car.x + gap/2)%ROAD-LENGTH
+	# 	{gap,x}
+	# |> pl.filter (d)-> d.gap>=(2*SPACE)
 
 	[arrivals,waiting] = waiting
-	|> partition -> it.entry-time<=time
-	
-	traveling = concat [traveling,arrivals]
-	|> sort-by (.x)
+	|> pl.partition (d)-> 
+		time-test = d.entry-time<=time
+		# if !time-test
+		# 	false
+		# else
+		# 	traveling |> _.find _,(car,i,k)->
+		# 		gap1 = differ car.x,d.x |> Math.abs 
+		# 		if (car2=k[(i+1)%k.length])
+		# 			gap2 = differ car2.x,d.x |> Math.abs 
+		# 			gap1 < SPACE and gap2 <SPACE
+		# 		else
+		# 			gap1 < SPACE
+		# 	!(typeof traveling == 'undefined' )
+
+
+	traveling = pl.concat [traveling,arrivals]
+	|> pl.sort-by (.x)
 
 	car-num = 0
 	traveling = traveling 
-	|> map (car)->
+	|> pl.map (car)->
 		next-car = traveling[(++car-num)%traveling.length]
 		move-car car,next-car,reds
 
 	[traveling,exiting] = traveling 
-	|> partition -> it.cum-move<=it.trip-length
+	|> pl.partition -> it.cum-move<=it.trip-length
 
-	exited = concat [exited,exiting]
+	exited = pl.concat [exited,exiting]
 
 	{...state,traveling,waiting,exited} 
 
 reduce-memory = (state)->
-	{memory,q,k,time,memory-EN,memory-EX,EN,EX,traveling,arrivals,exited} = state
-	q = q + fold do
+	{memory,q,n,time,memory-EN,memory-EX,EN,EX,traveling,arrivals,exited} = state
+	q = q + pl.fold do
 			(a,b)-> a+b.move
 			0
 			traveling
-	k = k + traveling.length
+
+	n = n + traveling.length
 
 	if time%25 is 0
 		EN = traveling.length + exited.length
@@ -89,23 +108,22 @@ reduce-memory = (state)->
 		memory-EX = [...memory-EX,{time: time, val: EX}]
 
 	if (time%MEMORY-FREQ) == 0
-		new-memory = 
-			q: q/MEMORY-FREQ/ROAD-LENGTH
-			k: k/MEMORY-FREQ/ROAD-LENGTH
-			id: uniqueId()
+		k = n/MEMORY-FREQ/ROAD-LENGTH
+		q = q/MEMORY-FREQ/ROAD-LENGTH
+		new-memory = {k,q,id: time}
 
 		memory  = [...memory,new-memory]
 
-		q = k = 0
-		if memory.length> MAX-MEMORY then memory = tail memory
+		q = n = 0
+		if memory.length> MAX-MEMORY then memory = pl.tail memory
 			
-	{...state,q,k,memory,memory-EN,memory-EX}
+	{...state,q,n,memory,memory-EN,memory-EX}
 
 reduce-signals = (state)->
 	{signals,time,green,cycle,offset,num-signals} = state
 	i=0
 	signals = signals 
-	|> map (signal)->
+	|> pl.map (signal)->
 		O = if (i+1)<signals.length then i*offset else offset*i/2
 		time-in-cycle = (time - O)%%cycle
 		i++

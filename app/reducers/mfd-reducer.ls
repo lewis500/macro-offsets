@@ -28,7 +28,6 @@ get-entry = ({i,d,cycle,green,offset})->
 find-min = (k,table)->
 	costs = table |> map (e)->
 		(e.c + e.x*k)/e.t 
-		# |> concat _
 	q = _.min [...costs,VF*k,W*(KJ - k)]
 	v = if k>0 then q/k else 0
 	{k,q,v}
