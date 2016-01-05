@@ -23,7 +23,7 @@ move-car = (car,next-car,reds)->
 	x-red = reds
 	|> pl.find (l)->	l>x-prev
 	gap-red = differ x-prev,x-red
-	gap-car = if next-car then differ x-prev,next-car.x-old else Infinity
+	gap-car = if (next-car and next-car!=car) then differ x-prev,next-car.x-old else Infinity
 	move = pl.max 0,(pl.minimum [VF,gap-car - SPACE,gap-red - SPACE] )
 	x-new = (x-prev + move)%ROAD-LENGTH
 
