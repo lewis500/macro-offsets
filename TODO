@@ -1,3 +1,6 @@
++ simplify all these constants
++ have a button to turn macro offsets on and off
+
 + dont use a scale. just have an array from 0 to road-length. then, use math.floor to get the nearest whole-number location of the car. look up that entry in the array.
 + only take measurements from the ones not next to the transition
 + add velocity line
