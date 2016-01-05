@@ -63,16 +63,16 @@ reduce-cars = (state)->
 				return true
 			car1 = traveling 
 				|> _.find-last _, (car)->
-					car.x < d.x
+					car.x <= d.x
 			if car1
-				gap1 = differ( car1.x,d.x) |> Math.abs 
+				gap1 = differ( car1.x,d.x)
 				if gap1<=SPACE
 					return false
 			car2 = traveling 
 				|> _.find _, (car)->
-					car.x > d.x
+					car.x >= d.x
 			if car2
-				gap2 = differ( car2.x,d.x) |> Math.abs 
+				gap2 = differ(d.x,car2.x)
 				if gap2<=SPACE
 					return false
 			return true
