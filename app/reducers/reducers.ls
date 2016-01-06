@@ -32,16 +32,15 @@ reduce-offset = (state)->
 differ = (a,b)->
 	res = (b - a)%%ROAD-LENGTH
 
-move-car = (car,next-car,reds-xs,queued-xs)->
+move-car = (car,next,xs)->
 	{x} = car
 	move = 0
-	if next-car.id!=car.id
-		move = differ(x,next-car.x-old) - SPACE |> pl.min _,VF |> pl.max _,0
-	if x + move in pl.concat reds-xs,queued-xs
-		move = 0
-
+	if next and next.id!=car.id
+		move = differ(x,next.x-old) - SPACE |> pl.min _,VF |> pl.max _,0
 	x-new = (x + move)%ROAD-LENGTH
-
+	if x-new in xs
+		move = 0
+		x-new = x
 	{...car,x:x-new,x-old: x, move,cum-move: car.cum-move+move}
 
 reduce-cars = (state)->
@@ -54,10 +53,12 @@ reduce-cars = (state)->
 
 	queued-xs = queueing |> pl.map (.x)
 
+	xs = pl.concat reds-xs,queued-xs
+
 	traveling = traveling 
 	|> _.map _,(car,i)->
 		next-car = traveling[(i+1)%traveling.length]
-		move-car car,next-car,reds-xs,queued-xs
+		move-car car,next-car,xs
 
 	[new-queueing,waiting] = waiting
 	|> pl.partition (d)-> 

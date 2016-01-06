@@ -1,7 +1,7 @@
 react = require 'react'
 d3 = require 'd3'
 {Q0,KJ} = require '../constants/constants'
-{svg,circle,path,rect,g} = react.DOM
+{svg,circle,path,rect,g,line} = react.DOM
 require '../style/style-charts.scss'
 {connect} = require 'react-redux'
 {map} = require 'prelude-ls'
@@ -33,7 +33,7 @@ yAxis = d3.svg
 	.scale y
 	.orient 'left'
 
-line = d3.svg
+path-maker = d3.svg
 	.line()
 	.x (.time)>>x
 	.y (.val)>>y
@@ -43,7 +43,15 @@ Cum-Chart = react.create-class do
 		d3.select @refs.xAxis	.call xAxis
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
-		{memory-EN,memory-EX,formula-EX,formula-EN} = @props
+		{memory-EN,memory-EX,formula-EX,formula-EN,lines} = @props
+		dashes = lines |> map (d)->
+			line do
+				y1:0
+				y2: height
+				x1: x d.time
+				x2: x d.time
+				key: d.time
+				className: \dash
 		svg do
 			do
 				id: 'mfdChart'
@@ -51,34 +59,26 @@ Cum-Chart = react.create-class do
 				height: height+m.t+m.b
 			g do
 				transform: "translate(#{m.l},#{m.t})"
-				rect do
-					do 
-						width: width
-						height: height
-						className: \bg
-				g className: 'g-paths'
-					path do
-						className: 'en'
-						d: line memory-EN
-				g className: 'g-paths'
-					path do
-						className: 'en f'
-						d: line formula-EN
-				g className: 'g-paths'
-					path do
-						className: 'ex'
-						d: line memory-EX
-				g className: 'g-paths'
-					path do
-						className: 'ex f'
-						d: line formula-EX
+				path do
+					className: 'en'
+					d: path-maker memory-EN
+				path do
+					className: 'en f'
+					d: path-maker formula-EN
+				path do
+					className: 'ex'
+					d: path-maker memory-EX
+				path do
+					className: 'ex f'
+					d: path-maker formula-EX
+				dashes
 				g className:'y axis',ref: 'yAxis'
 				g className:'x axis',ref: 'xAxis',transform: "translate(0,#{height})"
 
 	place_circle: (d)->
 		[tx,ty] = [x(d.k), y(d.q)]
 		"translate(#{tx},#{ty})"
-|> connect -> it{memory-EN,memory-EX,formula-EX,formula-EN}
+|> connect -> it{memory-EN,memory-EX,formula-EX,formula-EN,lines}
 |> react.create-factory
 
 export Cum-Chart

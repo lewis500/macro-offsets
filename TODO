@@ -1,3 +1,4 @@
++ instad of two arrays for cum, just do one. use two path-makers
 + still need to fix something about how cars enter, etc.
 + get rid of all this car-num++ stuff. just use the lodash version of map.
 + have a button to turn macro offsets on and off

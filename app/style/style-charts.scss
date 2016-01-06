@@ -36,12 +36,15 @@ path.vel{
 	stroke-dasharray: 2,2;
 }
 
+.dash{
+	stroke-width: 1px;
+	stroke-dasharray: 1,1.6;
+	stroke: $md-grey-500;
+	opacity: .5;
+}
 
 .bg{
 	fill: white;
-	// opacity: 0
-	// fill: $md-grey-200;
-	// opacity: .3;
 }
 
 .portrait{

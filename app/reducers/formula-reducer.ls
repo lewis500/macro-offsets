@@ -12,15 +12,21 @@ reduce-formula = (state)->
 	traveling = []
 	rates = []
 	time = 0
-	step = 25 
+	step = 25
+	cum-move = 0
+	lines = [{time,cum-move}]
+
 	while (waiting.length>0 or traveling.length>0) and time<5000
 		n0 = traveling.length
 		v = V n0/ROAD-LENGTH
-		d = v*step
+		move = v*step
+		cum-move+=move
+		if (cum-move - lines[* - 1].cum-move) >= 50
+			lines.push {time,cum-move}
 
 		traveling = traveling 
 		|> map (car)->
-			{...car,cum-move: car.cum-move+d}
+			{...car,cum-move: car.cum-move+move}
 		|> filter (car)->
 			car.cum-move<=car.trip-length
 
@@ -49,6 +55,6 @@ reduce-formula = (state)->
 		time:-1,val:0
 		rates
 
-	{...state,formula-EN: cum-entries, formula-EX: cum-exits, rates}
+	{...state,formula-EN: cum-entries, formula-EX: cum-exits, rates,lines}
 
 export reduce-formula

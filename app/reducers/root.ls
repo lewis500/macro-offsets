@@ -30,6 +30,7 @@ initial-state =
 	time: 0
 	cars: cars
 	paused: true
+	lines: []
 	signals: []
 	traveling: []
 	exited: []
