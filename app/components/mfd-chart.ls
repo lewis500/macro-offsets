@@ -6,7 +6,7 @@ require '../style/style-charts.scss'
 {connect} = require 'react-redux'
 {map} = require 'prelude-ls'
 [width,height] = [250,250]
-
+_ = require \lodash
 m = 
 	t: 20
 	l: 50
@@ -46,15 +46,15 @@ MFD-Chart = react.create-class do
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
 		{mfd,memory,formula-pred} = @props
-		i = 0
-		lines = memory[1 til ] |> map (b)->
-			a = memory[i++]
+
+		lines = memory[1 til ] |> _.map _,(b,i)->
+			a = memory[i]
 			path do
 				d: line [a,b]
 				className: 'portrait'
 				key: 'line' ++ b.id
-		circle-num = 0
-		circles = memory |> map (d)->
+
+		circles = memory |> _.map _,(d,i)->
 			[tx,ty] = [x(d.k), y(d.q)]
 			circle do
 				className: 'memory'
@@ -62,7 +62,7 @@ MFD-Chart = react.create-class do
 				r: 3
 				transform: "translate(#{tx},#{ty})"
 				opacity: do ->
-					2/(1+Math.exp 0.1*(memory.length - (circle-num++)))
+					2/(1+Math.exp 0.1*(memory.length - i))
 
 		svg do
 			do

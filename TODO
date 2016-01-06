@@ -1,15 +1,10 @@
-+ catch edge case where the cars loop around
++ still need to fix something about how cars enter, etc.
 + get rid of all this car-num++ stuff. just use the lodash version of map.
-+ simplify all these constants
 + have a button to turn macro offsets on and off
-
-+ dont use a scale. just have an array from 0 to road-length. then, use math.floor to get the nearest whole-number location of the car. look up that entry in the array.
-+ only take measurements from the ones not next to the transition
 + add velocity line
-+ use an underscore or PL for the prelude functions
-+ try using memoize on certain stateless functions
 
 LONG TERM
++ only take measurements from the ones not next to the transition
 + make the signals animate when they change
 + try deku
 + only fire the request animation frame on a tick  action
@@ -17,3 +12,4 @@ LONG TERM
 + try checking free locations by making a big array of all the cells and setting the taken ones to true. that way, when a cell is added you can just set it to true. only works for whole-number locations, though.
 want o enter the same place at the same time
 trying using ^^ instead of ... to copy objects
++ try using reselect on certain stateless functions
