@@ -19,14 +19,14 @@ Header = ({num-signals,offset,cycle,green,dispatch,style})->
 				step: 1
 				on-change: actioner set-num-signals
 				label: 'number signals'
-		Slider do
-			do
-				value: offset
-				max: 100
-				min: -100
-				step: 1
-				on-change: actioner set-offset
-				label: 'offset'
+		# Slider do
+		# 	do
+		# 		value: offset
+		# 		max: 100
+		# 		min: -100
+		# 		step: 1
+		# 		on-change: actioner set-offset
+		# 		label: 'offset'
 		Slider do
 			do
 				value: green

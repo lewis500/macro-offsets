@@ -3,6 +3,9 @@ _ = require 'lodash'
 {SPACE,K0,VF,W,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
 {reduce-mfd} = require './mfd-reducer'
 
+nexter = (i,list)->
+	list[(i+1)%list.length]
+
 reduce-time = (state)->
 	{time,rates} = state
 	time = time + 1
@@ -12,23 +15,7 @@ reduce-time = (state)->
 reduce-tick = ->
 	a = if it.time%250==0 then reduce-mfd else (b)-> b
 	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory 
-	# |> reduce-offset |> a
 
-reduce-offset = (state)->
-	{traveling,mfd,cycle,green,num-signals,time} = state
-	k = traveling.length/ROAD-LENGTH
-	[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
-	r = k/K0
-	p = switch 
-		case r<a
-			1/VF
-		case a<=r< b
-			1/ VF * (1 - r) / (1 - green/cycle)
-		default
-			-1/W
-	offset = p * ROAD-LENGTH/num-signals
-
-	{...state,offset}
 
 differ = (a,b)->
 	res = (b - a)%%ROAD-LENGTH
@@ -59,8 +46,8 @@ reduce-cars = (state)->
 	xs = pl.concat reds-xs,queued-xs
 
 	traveling = traveling 
-	|> _.map _,(car,i)->
-		next-car = traveling[(i+1)%traveling.length]
+	|> _.map _,(car,i,k)->
+		next-car = nexter i,k
 		move-car car,next-car,xs
 
 	[new-queueing,waiting] = waiting
@@ -112,19 +99,25 @@ reduce-memory = (state)->
 		memory  = [...memory,new-memory]
 
 		q = n = 0
+
 		if memory.length> MAX-MEMORY then memory = pl.tail memory
 			
 	{...state,q,n,memory,memory-EN,memory-EX}
 
 reduce-signals = (state)->
-	{signals,time,green,cycle,offset,num-signals} = state
-	i=0
-	signals = signals 
-	|> pl.map (signal)->
-		O = if (i+1)<signals.length then i*offset else offset*i/2
-		time-in-cycle = (time - O)%%cycle
-		i++
-		{...signal,green: time-in-cycle<=green}
+	{signals,time,green,cycle,num-signals,traveling} = state
+	d = ROAD-LENGTH / num-signals
+	traveling-grouped = traveling |> pl.group-by (car)->
+		Math.floor car.x/d
+	signals = signals|> _.map _,(signal,i,k)->
+		next-a = nexter i,k .offset-a
+		# if traveling-grouped[i]?.length/d >= K0
+		offset-a = d/W + next-a
+		# else
+			# offset-a = -d/VF + next-a
+		# offset-a = 0
+		time-in-cycle = (time + offset-a)%%cycle
+		{...signal,green: time-in-cycle<=green, offset-a}
 	{...state,signals}
 
 export reduce-tick

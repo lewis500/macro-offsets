@@ -36,7 +36,7 @@ initial-state =
 	exited: []
 	waiting: [...cars]
 	cycle: 100
-	green: 50
+	green: 15
 	offset: 0
 	num-signals: 30
 	q: 0
@@ -67,6 +67,8 @@ signals-create = (num-signals)->
 			x: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
 			id: i
 			green: true
+			# offset-r:
+			offset-a: 0
 
 combined = reduce-mfd >> reduce-formula
 
@@ -89,7 +91,7 @@ root = (state,action)->
 		paused = !state.paused
 		{...state, paused}
 	case actions.TICK
-		for i in [til 10]
+		for i in [til 8]
 			state = reduce-tick state
 		state
 	default state
