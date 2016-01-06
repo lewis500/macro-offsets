@@ -35,8 +35,10 @@ differ = (a,b)->
 move-car = (car,next,xs)->
 	{x} = car
 	move = 0
-	if next and next.id!=car.id
+	if next.id!=car.id
 		move = differ(x,next.x-old) - SPACE |> pl.min _,VF |> pl.max _,0
+	else 
+		move = VF
 	x-new = (x + move)%ROAD-LENGTH
 	if x-new in xs
 		move = 0
