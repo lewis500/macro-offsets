@@ -35,19 +35,11 @@ differ = (a,b)->
 move-car = (car,next-car,reds-xs,queued-xs)->
 	{x} = car
 	move = 0
-	next-red = reds-xs 
-	|> _.find _,(xx)-> x<xx
-	if next-red is false
-		next-red = Infinity
-	next-queueing = queued-xs
-	|>_.find _,(xx)->x<xx
-	if next-queueing is false
-		next-queueing = Infinity
+	if next-car.id!=car.id
+		move = differ(x,next-car.x-old) - SPACE |> pl.min _,VF |> pl.max _,0
+	if x + move in pl.concat reds-xs,queued-xs
+		move = 0
 
-	if next-car and next-car.id!=car.id
-		move = [VF,differ(x,next-car.x-old) - SPACE, differ(x,next-red) - SPACE, differ(x,next-queueing) - SPACE]|>pl.minimum|> pl.max _,0
-	else
-		move = VF
 	x-new = (x + move)%ROAD-LENGTH
 
 	{...car,x:x-new,x-old: x, move,cum-move: car.cum-move+move}

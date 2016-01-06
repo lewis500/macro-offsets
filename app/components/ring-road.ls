@@ -18,6 +18,7 @@ RingRoad = ({traveling,signals,queueing})->
 			viewBox: '0 0 110 110'
 		g do
 			transform: 'translate(55,55)'
+			circle className: \roadout,r:52
 			circle className: \road,r:50
 			g do
 				className: 'g-cars'
@@ -26,9 +27,9 @@ RingRoad = ({traveling,signals,queueing})->
 						do
 							className: 'car'
 							key: car.id
-							y: -0.15
-							height: 0.3
-							width: 0.4
+							y: -0.35
+							height: 0.7
+							width: 0.3
 							transform: do ->
 								x = car.x/ROAD-LENGTH*360
 								"rotate(#{x}) translate(0,50)"
@@ -38,9 +39,9 @@ RingRoad = ({traveling,signals,queueing})->
 						do
 							className: 'car'
 							key: car.id
-							y: -0.15
-							height: 0.3
-							width: 0.4
+							y: -0.35
+							height: 0.7
+							width: 0.3
 							transform: do ->
 								x = car.x/ROAD-LENGTH*360
 								"rotate(#{x}) translate(0,53)"
