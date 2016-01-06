@@ -10,7 +10,7 @@ require!{
 
 App = react.create-class do
 	render: ->
-		{paused, time, pause-play, tick, reset, traveling, signals} = @props
+		{paused, queueing, time, pause-play, tick, reset, traveling, signals} = @props
 		div do
 			style: {flex-direction: \column}
 			div do
@@ -37,7 +37,7 @@ App = react.create-class do
 				style: {display: \flex, flex-direction: \row}
 				div do
 					style: {display: \flex, flex-basis: \35%}
-					Ring-Road {traveling,signals}
+					Ring-Road {traveling,signals,queueing}
 				div do
 					style: {display: \flex}
 					MFD-Chart {}
@@ -53,7 +53,7 @@ App = react.create-class do
 		@props.pause-play()
 
 |> connect do
-	-> it{paused,time,traveling,signals}
+	-> it{paused,time,traveling,signals,queueing}
 	(dispatch) ->
 		pause-play: -> dispatch type: 'PAUSE-PLAY'
 		tick: -> dispatch type: \TICK

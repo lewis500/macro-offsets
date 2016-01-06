@@ -9,29 +9,9 @@ reduce-time = (state)->
 	formula-pred = _.find-last rates, -> it.time<=time
 	{...state, time,formula-pred}
 
-differ = (a,b)->
-	res = (b - a + 500)%%1000 - 500
-	if res<0
-		360 + res
-	else
-		res
-
 reduce-tick = ->
 	a = if it.time%250==0 then reduce-mfd else (b)-> b
-	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory 
-		|> reduce-offset |> a
-
-move-car = (car,next-car,reds-xs)->
-	x-prev = car.x
-	move = 0
-	unless (x-prev+VF) in reds-xs
-		if next-car and next-car.id!=car.id
-			move = pl.max 0,(pl.minimum [VF,-SPACE + differ x-prev,next-car.x-old])
-		else
-			move = VF
-	x-new = (x-prev + move)%ROAD-LENGTH
-
-	{...car,x:x-new,x-old: x-prev, move,cum-move: car.cum-move+move}
+	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory |> reduce-offset |> a
 
 reduce-offset = (state)->
 	{traveling,mfd,cycle,green,num-signals,time} = state
@@ -49,6 +29,29 @@ reduce-offset = (state)->
 
 	{...state,offset}
 
+differ = (a,b)->
+	res = (b - a)%%ROAD-LENGTH
+
+move-car = (car,next-car,reds-xs,queued-xs)->
+	{x} = car
+	move = 0
+	next-red = reds-xs 
+	|> _.find _,(xx)-> x<xx
+	if next-red is false
+		next-red = Infinity
+	next-queueing = queued-xs
+	|>_.find _,(xx)->x<xx
+	if next-queueing is false
+		next-queueing = Infinity
+
+	if next-car and next-car.id!=car.id
+		move = [VF,differ(x,next-car.x-old) - SPACE, differ(x,next-red) - SPACE, differ(x,next-queueing) - SPACE]|>pl.minimum|> pl.max _,0
+	else
+		move = VF
+	x-new = (x + move)%ROAD-LENGTH
+
+	{...car,x:x-new,x-old: x, move,cum-move: car.cum-move+move}
+
 reduce-cars = (state)->
 	{traveling,waiting,signals,time,exited,queueing} = state
 
@@ -57,6 +60,13 @@ reduce-cars = (state)->
 	|> pl.map (.x)
 	|> pl.sort-by -> it
 
+	queued-xs = queueing |> pl.map (.x)
+
+	traveling = traveling 
+	|> _.map _,(car,i)->
+		next-car = traveling[(i+1)%traveling.length]
+		move-car car,next-car,reds-xs,queued-xs
+
 	[new-queueing,waiting] = waiting
 	|> pl.partition (d)-> 
 		time-test = d.entry-time<=time
@@ -64,27 +74,17 @@ reduce-cars = (state)->
 	queueing = pl.concat [queueing,new-queueing]
 
 	traveling-xs = traveling |> pl.map (.x)
-
 	[entering,queueing] = queueing 
-		|> pl.partition (d)->
-			if d.x in traveling-xs
-				return false
-			xx = traveling-xs 
-				|> _.find-last _, (x)->
-					x <= d.x
-			if differ(xx,d.x)<=SPACE
-				return false
-			true
+		|> pl.partition (car)->
+			if car.x in traveling-xs
+				false
+			else
+				traveling-xs[*] = car.x
+				true
 
 	traveling = pl.concat [traveling,entering]
 	|> pl.sort-by (.x)
 
-	queued-spaces = queueing |> pl.map (.x)
-
-	traveling = traveling 
-	|> _.map _,(car,i)->
-		next-car = traveling[(i+1)%traveling.length]
-		move-car car,next-car,reds-xs
 
 	[traveling,exiting] = traveling 
 	|> pl.partition -> it.cum-move<=it.trip-length

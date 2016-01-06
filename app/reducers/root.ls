@@ -17,6 +17,7 @@ cars = [til NUM-CARS]
 		entry-loc = random(0,ROAD-LENGTH)
 		res = 
 			x: entry-loc
+			x-old: entry-loc
 			id: i
 			fill: sample COLORS
 			trip-length: TRIP-LENGTH
@@ -56,8 +57,8 @@ reset = (state)->
 		time = 0
 		paused = true
 		EN = EX = k = q = 0
-		memory = []; memory-EN = []; memory-EX = []; exited = []; traveling = [];traveling = [];
-		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory,traveling,exited,k,q}
+		memory = []; memory-EN = []; memory-EX = []; exited = []; traveling = [];traveling = []; queueing=[]
+		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory,traveling,exited,k,q,queueing}
 
 signals-create = (num-signals)->	
 		signals = [til num-signals] 
@@ -87,7 +88,7 @@ root = (state,action)->
 		paused = !state.paused
 		{...state, paused}
 	case actions.TICK
-		for i in [til 7]
+		for i in [til 10]
 			state = reduce-tick state
 		state
 	default state
