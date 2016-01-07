@@ -106,18 +106,40 @@ reduce-memory = (state)->
 
 reduce-signals = (state)->
 	{signals,time,green,cycle,num-signals,traveling} = state
-	d = ROAD-LENGTH / num-signals
-	traveling-grouped = traveling |> pl.group-by (car)->
-		Math.floor car.x/d
-	signals = signals|> _.map _,(signal,i,k)->
-		next-a = nexter i,k .offset-a
-		# if traveling-grouped[i]?.length/d >= K0
-		offset-a = d/W + next-a
-		# else
-			# offset-a = -d/VF + next-a
-		# offset-a = 0
-		time-in-cycle = (time + offset-a)%%cycle
-		{...signal,green: time-in-cycle<=green, offset-a}
+	d = ROAD-LENGTH/num-signals
+	signals = signals |> _.map _,(signal,i,k)->
+		{next-green,next-red} = signal
+		if time >= next-green
+			offset-a = 0
+			if (next-signal = k[i+1])
+				offset-r = d/VF
+				next-green = next-signal.next-green - offset-r
+				while next-green<time
+					next-green+=cycle
+				next-red = next-signal.next-red - offset-r
+				while next-red<time
+					next-red+=cycle
+			else 
+				next-green = time + cycle
+				next-red = time + green
+			{...signal,green: true, next-green,next-red}
+		else if time >= next-red
+			{...signal,green:false}
+		else 
+			signal
+		# {...signal,green: time-in-cycle<=green,offset-a}
+	# d = ROAD-LENGTH / num-signals
+	# traveling-grouped = traveling |> pl.group-by (car)->
+	# 	Math.floor car.x/d
+	# signals = signals|> _.map _,(signal,i,k)->
+	# 	next-a = nexter i,k .offset-a
+	# 	# if traveling-grouped[i]?.length/d >= K0
+	# 	offset-a = d/W + next-a
+	# 	# else
+	# 		# offset-a = -d/VF + next-a
+	# 	# offset-a = 0
+	# 	time-in-cycle = (time + offset-a)%%cycle
+	# 	{...signal,green: time-in-cycle<=green, offset-a}
 	{...state,signals}
 
 export reduce-tick

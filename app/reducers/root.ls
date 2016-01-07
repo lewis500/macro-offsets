@@ -58,7 +58,8 @@ reset = (state)->
 		time = 0
 		paused = true
 		EN = EX = k = q = 0
-		memory = []; memory-EN = []; memory-EX = []; exited = []; traveling = [];traveling = []; queueing=[]
+		memory = []; memory-EN = []; memory-EX = []; exited = []; traveling = [];traveling = []; queueing=[];
+		signals = signals-create()
 		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory,traveling,exited,k,q,queueing}
 
 signals-create = (num-signals)->	
@@ -67,8 +68,9 @@ signals-create = (num-signals)->
 			x: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
 			id: i
 			green: true
-			# offset-r:
 			offset-a: 0
+			next-green: 0
+			next-red: 1000
 
 combined = reduce-mfd >> reduce-formula
 
@@ -91,7 +93,7 @@ root = (state,action)->
 		paused = !state.paused
 		{...state, paused}
 	case actions.TICK
-		for i in [til 8]
+		for i in [til 3]
 			state = reduce-tick state
 		state
 	default state
