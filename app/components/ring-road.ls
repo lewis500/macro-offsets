@@ -50,13 +50,13 @@ RingRoad = ({traveling,signals,queueing})->
 					rect do
 						do
 							key: signal.id
-							className: classNames 'signal',{green: signal.green}
+							className: classNames 'signal',{green: !signal.red,backwards: signal.backwards}
 							width: 0.6
 							height: 2
 							y: -1
 							transform: do ->
 								x = signal.x/ROAD-LENGTH*360
-								scale = if signal.green then 1 else 1.2
+								scale = if !signal.red then 1 else 1.2
 								"rotate(#{x}) translate(0,50) scale(#{scale}) "
 
 export RingRoad

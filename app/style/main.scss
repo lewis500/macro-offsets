@@ -3,3 +3,20 @@
 body{
 	padding: 20px;
 }
+
+
+.my-button {
+  @extend .mdl-button, 
+  	.mdl-js-button, 
+  	.mdl-button--raised, 
+  	.mdl-button--colored, .mdl-js-ripple-effect;
+}
+
+.mdl-slider {
+  width: calc(100% - 20px);
+  margin: 0 10px;
+}
+
+.mdl-radio__label{
+	font-size: 12px;
+}

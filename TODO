@@ -1,3 +1,14 @@
+MICRO
++ do all the updats on the green of a single "anchor" signal
++ add coloring for instant syncing
++ make modes for time-path, fixed and macroscopic
++ put the buttons in the header, not in the app.ls
++ make a button for "recalibrate automatic"
+
+SIGNALING
++ try instant syncing
++ add coloring for direction of syncing
+
 + instad of two arrays for cum, just do one. use two path-makers
 + still need to fix something about how cars enter, etc.
 + get rid of all this car-num++ stuff. just use the lodash version of map.

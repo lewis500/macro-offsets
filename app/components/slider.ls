@@ -8,14 +8,14 @@ Slider = ({value,label,on-change,max,min,step})->
 			tabIndex:0
 			type: 'range'
 		div do
-			style: {display: \flex, flex-direction: 'row'}
+			style: {display: \flex, flex-direction: \column,   align-items: \center}
 			div do
-				style: {flex-basis: '300px'}
-				input do
-					{value,label,on-change,max,min,step,...props}
+				className: 'slider-label',style: {display: \flex, horizontal-align: 'center'}
+				"#{label}: #{value}"
 			div do
 				style: {display: \flex}
-				"#{label}: #{value}"
+				input do
+					{value,label,on-change,max,min,step,...props}
 
 Slider = Slider|> react.create-factory
 

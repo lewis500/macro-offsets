@@ -5,13 +5,11 @@ require! {
 	'./reducers':{reduce-tick}
 	'./mfd-reducer': {reduce-mfd}
 	'./formula-reducer': {reduce-formula}
-	'../constants/constants': {ROAD-LENGTH,COLORS,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
+	'../constants/constants': {ROAD-LENGTH,COLORS,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random,assign}
 }
 
-# INITIALIZE WAITING CARS
-# asdf = sample [0 til (ROAD-LENGTH*1000)]
 cars = [til NUM-CARS]
 	|> map (i) -> 
 		entry-loc = random(0,ROAD-LENGTH)
@@ -36,9 +34,9 @@ initial-state =
 	exited: []
 	waiting: [...cars]
 	cycle: 100
-	green: 15
+	green: 40
 	offset: 0
-	num-signals: 30
+	num-signals: 25
 	q: 0
 	n: 0
 	memory: []
@@ -59,41 +57,45 @@ reset = (state)->
 		paused = true
 		EN = EX = k = q = 0
 		memory = []; memory-EN = []; memory-EX = []; exited = []; traveling = [];traveling = []; queueing=[];
-		signals = signals-create()
-		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory,traveling,exited,k,q,queueing}
+		signals = signals-create state
+		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory,traveling,exited,k,q,queueing,signals}
 
-signals-create = (num-signals)->	
+signals-create = (state)->	
+		{green,num-signals,cycle} = state
+		d  =  ROAD-LENGTH/num-signals
 		signals = [til num-signals] 
 		|> map (i)->
-			x: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
-			id: i
-			green: true
-			offset-a: 0
-			next-green: 0
-			next-red: 1000
+			signal = 
+				x: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
+				id: i
+				red: false
+				backwards: false
+		signals
 
 combined = reduce-mfd >> reduce-formula
 
 root = (state,action)->
 	window.a = state
 	switch action.type
-	case actions.RESET
+	| actions.RESET
 		reset state
-	case actions.SET-CYCLE
+	| actions.CHANGE-MODE
+		{...state, mode: action.mode}
+	| actions.SET-CYCLE
 		combined {...state,cycle: action.cycle}
-	case actions.SET-OFFSET
+	| actions.SET-OFFSET
 		combined {...state,offset: action.offset}
-	case actions.SET-GREEN
+	| actions.SET-GREEN
 		combined {...state,green: action.green}
-	case actions.SET-NUM-SIGNALS
+	| actions.SET-NUM-SIGNALS
 		num-signals = action.num-signals
-		signals = signals-create num-signals 
+		signals = signals-create state 
 		combined {...state,num-signals,signals}
-	case actions.PAUSE-PLAY
+	| actions.PAUSE-PLAY
 		paused = !state.paused
 		{...state, paused}
-	case actions.TICK
-		for i in [til 3]
+	| actions.TICK
+		for i in [til 2]
 			state = reduce-tick state
 		state
 	default state

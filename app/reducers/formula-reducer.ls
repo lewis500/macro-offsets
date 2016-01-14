@@ -1,60 +1,108 @@
 {map,partition,filter,each,concat,fold,scan} = require 'prelude-ls'
 d3 = require 'd3'
-{ROAD-LENGTH} = require '../constants/constants'
+{VF,W,STEP,ROAD-LENGTH,STEP} = require '../constants/constants'
 
-reduce-formula = (state)->
+reduce-history = (state)->
 	{cars,mfd} = state
 	V = d3.scale.linear()
-		.domain( mfd |> map (.k))
-		.range( mfd |> map (.v))
+		.domain( mfd |>pl. map (.k))
+		.range( mfd |> pl.map (.v))
 
 	waiting = [...cars]
 	traveling = []
-	rates = []
+	history = {}
 	time = 0
-	step = 25
 	cum-move = 0
 	lines = [{time,cum-move}]
+	places = [til ROAD-LENGTH] |> pl.map -> -1
 
-	while (waiting.length>0 or traveling.length>0) and time<5000
+	while (waiting.length>0 or traveling.length>0) and time<7000
 		n0 = traveling.length
 		v = V n0/ROAD-LENGTH
-		move = v*step
+		move = v*STEP
 		cum-move+=move
-		if (cum-move - lines[* - 1].cum-move) >= 50
-			lines.push {time,cum-move}
 
-		traveling = traveling 
-		|> map (car)->
+		[traveling,exits] = traveling 
+		|> pl.map (car)->
 			{...car,cum-move: car.cum-move+move}
-		|> filter (car)->
+		|> pl.partition (car)->
 			car.cum-move<=car.trip-length
 
-		[arrivals,waiting] = waiting
-		|> partition -> it.entry-time<=time
+		exits |> pl.each (car)->
+			car.t-e = time
+			places[car.place] = -1
 
-		num-exits = n0 - traveling.length
-		num-entries = arrivals.length
+		[arrivals,waiting] = waiting
+		|> pl.partition -> it.entry-time<=time
+
+		arrivals |> pl.each (car)->
+			car.t-a = time
+			my-place = car.place = places 
+			|> _.find-index _,(d)-> d == -1
+			places[my-place] = car.id
+
 		q = v*n0/ROAD-LENGTH
 		k = n0/ROAD-LENGTH
 
-		rates.push {time,q,k,num-entries,num-exits}
-		traveling = concat [traveling,arrivals]
-		time+=step
+		traveling = pl.concat [traveling,arrivals]
+		history[time] = {time,q,k,traveling}
+		time+=STEP
+	{...state,history}
 
-	cum-entries = scan do
-		(a,b)->
-			val: a.val + b.num-entries
-			time: b.time
-		time: -1, val: 0
-		rates
-	cum-exits = scan do
-		(a,b)->
-			val: a.val + b.num-exits
-			time: b.time
-		time:-1,val:0
-		rates
+# reduce-formula = (state)->
+# 	{cars,mfd} = state
+# 	V = d3.scale.linear()
+# 		.domain( mfd |> map (.k))
+# 		.range( mfd |> map (.v))
 
-	{...state,formula-EN: cum-entries, formula-EX: cum-exits, rates,lines}
+# 	waiting = [...cars]
+# 	traveling = []
+# 	rates = []
+# 	time = 0
+# 	step = 25
+# 	cum-move = 0
+# 	lines = [{time,cum-move}]
 
-export reduce-formula
+# 	while (waiting.length>0 or traveling.length>0) and time<5000
+# 		n0 = traveling.length
+# 		v = V n0/ROAD-LENGTH
+# 		move = v*step
+# 		cum-move+=move
+# 		if (cum-move - lines[* - 1].cum-move) >= 50
+# 			lines.push {time,cum-move}
+
+# 		traveling = traveling 
+# 		|> map (car)->
+# 			{...car,cum-move: car.cum-move+move}
+# 		|> filter (car)->
+# 			car.cum-move<=car.trip-length
+
+# 		[arrivals,waiting] = waiting
+# 		|> partition -> it.entry-time<=time
+
+# 		num-exits = n0 - traveling.length
+# 		num-entries = arrivals.length
+# 		q = v*n0/ROAD-LENGTH
+# 		k = n0/ROAD-LENGTH
+
+# 		rates.push {time,q,k,num-entries,num-exits}
+# 		traveling = concat [traveling,arrivals]
+# 		time+=step
+
+# 	cum-entries = scan do
+# 		(a,b)->
+# 			val: a.val + b.num-entries
+# 			time: b.time
+# 		time: -1, val: 0
+# 		rates
+# 	cum-exits = scan do
+# 		(a,b)->
+# 			val: a.val + b.num-exits
+# 			time: b.time
+# 		time:-1,val:0
+# 		rates
+
+# 	{...state,
+# 	formula-EN: cum-entries, formula-EX: cum-exits, rates,lines}
+
+export reduce-history

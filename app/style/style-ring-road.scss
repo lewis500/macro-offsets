@@ -51,3 +51,8 @@ svg#vis{
 	// transition: transform .2s ease-out;
 	// transition: fill .2s ease-out;
 }
+
+.signal.backwards{
+	stroke-width: .3px;
+	stroke: $md-yellow-700;
+}

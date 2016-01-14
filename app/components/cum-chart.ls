@@ -5,7 +5,7 @@ d3 = require 'd3'
 require '../style/style-charts.scss'
 {connect} = require 'react-redux'
 {map} = require 'prelude-ls'
-[width,height] = [250,250]
+[width,height] = [200,200]
 
 m = 
 	t: 20
@@ -44,14 +44,14 @@ Cum-Chart = react.create-class do
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
 		{memory-EN,memory-EX,formula-EX,formula-EN,lines} = @props
-		dashes = lines |> map (d)->
-			line do
-				y1:0
-				y2: height
-				x1: x d.time
-				x2: x d.time
-				key: d.time
-				className: \dash
+		# dashes = lines |> map (d)->
+		# 	line do
+		# 		y1:0
+		# 		y2: height
+		# 		x1: x d.time
+		# 		x2: x d.time
+		# 		key: d.time
+		# 		className: \dash
 		svg do
 			do
 				id: 'mfdChart'
@@ -71,7 +71,7 @@ Cum-Chart = react.create-class do
 				path do
 					className: 'ex f'
 					d: path-maker formula-EX
-				dashes
+				# dashes
 				g className:'y axis',ref: 'yAxis'
 				g className:'x axis',ref: 'xAxis',transform: "translate(0,#{height})"
 
