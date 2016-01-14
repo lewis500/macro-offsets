@@ -31,8 +31,10 @@ reduce-time = (state)->
 		{...state,time,forecast}
 
 reduce-tick = ->
-	it |> reduce-time |> reduce-signals 
-			|> reduce-cars |> reduce-memory 
+	it  |> reduce-signals 
+			|> reduce-cars 
+			|> reduce-memory 
+			|> reduce-time
 			
 
 differ = (a,b)->
@@ -126,19 +128,29 @@ reduce-signals = (state)->
 	signals = signals 
 	|> _.map _,(signal,i,k)->
 		{next-green,next-red} = signal
-		switch 
-		| time >= next-green
+		switch
+		| time == next-green
 			if next-signal=k[i+1]
-				next-green = next-signal.next-green - offset
-				while next-green<time
+				next-green = Math.floor(next-signal.next-green - offset)
+				while next-green<=time
 					next-green+=cycle
 				frac = (next-green - time)/cycle
-				next-red = time + frac*green
+				next-red = Math.floor(time + frac*green)
 			else
 				next-green = time + cycle
 				next-red = time + green
 			{...signal,red: false, next-green,next-red}
-		| time >= next-red
+		| time == next-red
+			# if next-signal=k[i+1]
+			# 	next-red = next-signal.next-red - offset
+			# 	while next-red<time
+			# 		next-red+=cycle
+			# 	frac = (next-red - time)/cycle
+			# 	next-green = time + frac*(cycle - green)
+			# else
+			# 	next-red = time + cycle
+			# 	next-green = time + cycle - green
+			# {...signal,red: false, next-green,next-red}
 			{...signal,red: true}
 		default
 			signal

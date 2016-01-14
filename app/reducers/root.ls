@@ -68,7 +68,10 @@ reset = (state)->
 			k:0
 			rates: []
 			queueing: []
-		{...state,...a}
+		res = {...state,...a}
+		window.a = res
+		res
+		
 
 signals-create = (state)->	
 		{green,num-signals,cycle,offset} = state
