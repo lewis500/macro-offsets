@@ -79,8 +79,8 @@ signals-create = (state)->
 				x: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
 				id: i
 				red: false
-				backwards: false
-				next-green: 
+				next-green: 0
+				next-red: 1000
 		signals
 
 combined = reduce-mfd 
