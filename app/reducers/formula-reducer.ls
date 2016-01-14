@@ -3,10 +3,11 @@ require!{
 	lodash: _
 	d3
 	'../constants/constants': {VF,W,ROAD-LENGTH,K0}
+	'./mfd-reducer': {reduce-mfd}
 }
 
 calc-offset = (state)->
-	{traveling,mfd,cycle,green,num-signals,time} = state
+	{traveling,cycle,green,num-signals,time} = state
 	k = traveling.length/ROAD-LENGTH
 	[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
 	r = k/K0
@@ -20,7 +21,7 @@ calc-offset = (state)->
 	offset = p * ROAD-LENGTH/num-signals
 
 reduce-prediction = (state)->
-	{cars,mfd,green,cycle,num-signals} = state
+	{cars,mfd,green,cycle,num-signals,mode} = state
 	V = d3.scale.linear()
 		.domain( mfd |> pl.map (.k))
 		.range( mfd |> pl.map (.v))
@@ -36,6 +37,7 @@ reduce-prediction = (state)->
 	step = 25
 
 	while (waiting.length>0 or traveling.length>0) and time<5000
+
 		n0 = traveling.length
 
 		v = V n0/ROAD-LENGTH
@@ -71,8 +73,24 @@ reduce-prediction = (state)->
 		traveling = pl.concat [traveling,arrivals]
 		prediction.push {time,q,k,traveling,cum-entries,cum-exits}
 		time+=step
+
+		if mode is 'time-path' and time%200==0
+			k = traveling.length/ROAD-LENGTH
+			[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
+			r = k/K0
+			p = switch 
+				case r<a
+					1/VF
+				case a<=r< b
+					1/ VF * (1 - r) / (1 - green/cycle)
+				default
+					-1/W
+			offset = p * ROAD-LENGTH/num-signals
+			console.log offset
+			{mfd} = reduce-mfd {...state,offset}
+			V = d3.scale.linear()
+				.domain( mfd |> pl.map (.k))
+				.range( mfd |> pl.map (.v))
 	{...state,prediction}
-
-
 
 export reduce-prediction

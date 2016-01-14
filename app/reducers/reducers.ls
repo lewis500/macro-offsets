@@ -14,7 +14,7 @@ reduce-time = (state)->
 	{...state, time}
 
 reduce-tick = ->
-	a = if it.time%250==0 then reduce-mfd else (b)-> b
+	# a = if it.time%250==0 then reduce-mfd else (b)-> b
 	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory 
 
 differ = (a,b)->

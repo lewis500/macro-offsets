@@ -2,7 +2,6 @@ d3 = require 'd3'
 _ = require 'lodash'
 {VF,Q0,KJ,W,ROAD-LENGTH} = require '../constants/constants'
 {map,concat-map,concat} = require 'prelude-ls'
-{reduce-formula} = require './formula-reducer'
 
 loop-over-entries = (it)->
 	[g0,g,i,res] = [1000,999,0,[]]

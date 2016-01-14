@@ -54,26 +54,11 @@ Header = react.create-class do
 							name: \options
 							id: 'option-2' 
 							type: \radio
+							on-change: change-mode \fixed
 					span do
 						do 
 							className: 'mdl-radio__label'
 						\fixed
-
-				# label do
-				# 	do
-				# 		className: radio-classes
-				# 		htmlFor: 'option-1'
-				# 	input do
-				# 		do
-				# 			className: 'mdl-radio__button'
-				# 			name: \options
-				# 			id: 'option-1' 
-				# 			type: \radio
-				# 			on-change: change-mode \hello
-				# 	span do
-				# 		do 
-				# 			className: 'mdl-radio__label'
-				# 		\automatic
 
 				label do
 					do
@@ -85,14 +70,12 @@ Header = react.create-class do
 							name: \options
 							id: 'option-3' 
 							type: \radio
-							on-change: change-mode \hello
+							on-change: change-mode 'time-path'
 					span do
 						do 
 							className: 'mdl-radio__label'
 						'time-path'
 
-			# div do
-				# style: {display: \flex, flex-direction: \row}
 			Slider do
 				do
 					value: num-signals
@@ -136,6 +119,6 @@ Header = Header
 		reset: -> dispatch type: \RESET
 		change-mode: (mode)->
 			->
-				dispatch {type: 'CHANGE-MODE', mode}
+				dispatch {type: 'SET-MODE', mode}
 |> react.create-factory
 export Header

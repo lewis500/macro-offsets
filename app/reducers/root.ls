@@ -47,6 +47,7 @@ initial-state =
 	EX: 0
 	rates: []
 	queueing: []
+	mode: \fixed
 
 reset = (state)->
 		a =
@@ -54,16 +55,13 @@ reset = (state)->
 			cars: cars
 			paused: true
 			lines: []
-			signals: []
 			traveling: []
 			exited: []
 			waiting: [...cars]
 			q: 0
 			n: 0
 			memory: []
-			mfd:[]
 			history: []
-			prediction: []
 			EN: 0
 			EX: 0
 			rates: []
@@ -90,7 +88,7 @@ root = (state,action)->
 	switch action.type
 	| actions.RESET
 		reset state
-	| actions.CHANGE-MODE
+	| actions.SET-MODE
 		{...state, mode: action.mode}
 	| actions.SET-CYCLE
 		combined {...state,cycle: action.cycle}
