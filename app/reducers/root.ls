@@ -89,7 +89,8 @@ root = (state,action)->
 	| actions.RESET
 		reset state
 	| actions.SET-MODE
-		{...state, mode: action.mode}
+		state = {...state, mode: action.mode}
+		reduce-prediction state
 	| actions.SET-CYCLE
 		combined {...state,cycle: action.cycle}
 	| actions.SET-OFFSET

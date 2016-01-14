@@ -74,7 +74,7 @@ reduce-prediction = (state)->
 		prediction.push {time,q,k,traveling,cum-entries,cum-exits}
 		time+=step
 
-		if mode is 'time-path' and time%200==0
+		if mode is 'time-path' and time%50==0
 			k = traveling.length/ROAD-LENGTH
 			[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
 			r = k/K0
@@ -86,7 +86,6 @@ reduce-prediction = (state)->
 				default
 					-1/W
 			offset = p * ROAD-LENGTH/num-signals
-			console.log offset
 			{mfd} = reduce-mfd {...state,offset}
 			V = d3.scale.linear()
 				.domain( mfd |> pl.map (.k))
