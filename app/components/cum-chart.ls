@@ -33,20 +33,20 @@ yAxis = d3.svg
 	.scale y
 	.orient 'left'
 
-path-maker = d3.svg
-	.line()
+path-maker-exits = d3.svg.line()
 	.x (.time)>>x
-	.y (.val)>>y
+	.y (.cum-exits)>>y
 
-# asdf = d3.svg.line()
-# 	.x (.time)
+path-maker-entries = d3.svg.line()
+	.x (.time)>>x
+	.y (.cum-entries)>>y
 
 Cum-Chart = react.create-class do
 	componentDidMount: ->
 		d3.select @refs.xAxis	.call xAxis
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
-		{memory-EN,memory-EX,history} = @props
+		{history,prediction} = @props
 		svg do
 			do
 				id: 'mfdChart'
@@ -56,23 +56,23 @@ Cum-Chart = react.create-class do
 				transform: "translate(#{m.l},#{m.t})"
 				path do
 					className: 'en'
-					d: path-maker memory-EN
+					d: path-maker-entries history
 				path do
 					className: 'en f'
-					d: path-maker history
+					d: path-maker-entries prediction
 				path do
 					className: 'ex'
-					d: path-maker memory-EX
+					d: path-maker-exits history
 				path do
 					className: 'ex f'
-					d: path-maker history
+					d: path-maker-exits prediction
 				g className:'y axis',ref: 'yAxis'
 				g className:'x axis',ref: 'xAxis',transform: "translate(0,#{height})"
 
 	place_circle: (d)->
 		[tx,ty] = [x(d.k), y(d.q)]
 		"translate(#{tx},#{ty})"
-|> connect -> it{memory-EN,memory-EX,history}
+|> connect -> it{history,prediction}
 |> react.create-factory
 
 export Cum-Chart

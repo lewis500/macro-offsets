@@ -77,7 +77,7 @@ reduce-cars = (state)->
 	{...state,traveling,waiting,exited,queueing} 
 
 reduce-memory = (state)->
-	{memory,q,n,time,memory-EN,memory-EX,EN,EX,traveling,arrivals,exited} = state
+	{memory,q,n,time,history,EN,EX,traveling,arrivals,exited} = state
 	q = q + pl.fold do
 			(a,b)-> a+b.move
 			0
@@ -88,8 +88,7 @@ reduce-memory = (state)->
 	if time%25 is 0
 		EN = traveling.length + exited.length
 		EX = exited.length
-		memory-EN = [...memory-EN,{time: time, val: EN}]
-		memory-EX = [...memory-EX,{time: time, val: EX}]
+		history = [...history,{time,cum-entries:EN,cum-exits:EX}]
 
 	if (time%MEMORY-FREQ) == 0
 		k = n/MEMORY-FREQ/ROAD-LENGTH
@@ -102,7 +101,7 @@ reduce-memory = (state)->
 
 		if memory.length> MAX-MEMORY then memory = pl.tail memory
 			
-	{...state,q,n,memory,memory-EN,memory-EX}
+	{...state,q,n,memory,history}
 
 reduce-signals = (state)->
 	{signals,time,green,cycle,num-signals,offset,traveling} = state

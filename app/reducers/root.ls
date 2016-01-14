@@ -4,7 +4,7 @@ require! {
 	'../actions/action-names': actions
 	'./reducers':{reduce-tick}
 	'./mfd-reducer': {reduce-mfd}
-	'./formula-reducer': {reduce-history}
+	'./formula-reducer': {reduce-prediction}
 	'../constants/constants': {ROAD-LENGTH,COLORS,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random,assign}
@@ -34,31 +34,41 @@ initial-state =
 	exited: []
 	waiting: [...cars]
 	cycle: 100
-	green: 40
+	green: 50
 	offset: 0
 	num-signals: 25
 	q: 0
 	n: 0
 	memory: []
 	mfd:[]
+	history: []
+	prediction: []
 	EN: 0
 	EX: 0
-	memory-EN: []
-	memory-EX: []
-	formula-EN: []
-	formula-EX: []
 	rates: []
-	formula-pred: {q:0,k:0,v:0}
 	queueing: []
 
 reset = (state)->
-		waiting = [...cars]
-		time = 0
-		paused = true
-		EN = EX = k = q = 0
-		memory = []; memory-EN = []; memory-EX = []; exited = []; traveling = [];traveling = []; queueing=[];
-		signals = signals-create state
-		{...state,waiting,time,paused,traveling,memory-EX,memory-EN,EN,EX,memory,traveling,exited,k,q,queueing,signals}
+		a =
+			time: 0
+			cars: cars
+			paused: true
+			lines: []
+			signals: []
+			traveling: []
+			exited: []
+			waiting: [...cars]
+			q: 0
+			n: 0
+			memory: []
+			mfd:[]
+			history: []
+			prediction: []
+			EN: 0
+			EX: 0
+			rates: []
+			queueing: []
+		{...state,...a}
 
 signals-create = (state)->	
 		{green,num-signals,cycle} = state
@@ -72,7 +82,8 @@ signals-create = (state)->
 				backwards: false
 		signals
 
-combined = reduce-mfd >> reduce-history
+combined = reduce-mfd 
+>> reduce-prediction
 
 root = (state,action)->
 	window.a = state
