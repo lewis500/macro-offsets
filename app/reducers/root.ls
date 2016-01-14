@@ -71,7 +71,7 @@ reset = (state)->
 		{...state,...a}
 
 signals-create = (state)->	
-		{green,num-signals,cycle} = state
+		{green,num-signals,cycle,offset} = state
 		d  =  ROAD-LENGTH/num-signals
 		signals = [til num-signals] 
 		|> map (i)->
@@ -80,6 +80,7 @@ signals-create = (state)->
 				id: i
 				red: false
 				backwards: false
+				next-green: 
 		signals
 
 combined = reduce-mfd 

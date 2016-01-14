@@ -111,12 +111,35 @@ reduce-memory = (state)->
 	{...state,q,n,memory,history}
 
 reduce-signals = (state)->
-	{signals,time,green,cycle,num-signals,offset,traveling} = state
-	signals = signals |> _.map _,(signal,i,k)->
-		time-in-cycle = (time - i*offset)%%cycle
-		red = time-in-cycle>=green
-		{...signal, red}
+	{signals,time,green,cycle,num-signals,offset} = state
+	signals = signals 
+	|> _.map _,(signal,i,k)->
+		{next-green,next-red} = signal
+		switch 
+		| time == next-green
+			if next-signal=k[i+1]
+				next-green = (next-signal.next-green - offset)
+				next-red = next-signal.next-red - offset
+				while next-green<time
+					next-green+=cycle
+				while next-red<time
+					next-red+=cycle
+			else
+				next-green = time + cycle
+				next-red = time + green
+			{...signal,red: false, next-green,next-red}
+		| time == next-red
+			{...signal,red: true}
+		default
+			signal
 
-	{...state,signals}
+# reduce-signals = (state)->
+# 	{signals,time,green,cycle,num-signals,offset,traveling} = state
+# 	signals = signals |> _.map _,(signal,i,k)->
+# 		time-in-cycle = (time - i*offset)%%cycle
+# 		red = time-in-cycle>=green
+# 		{...signal, red}
+
+# 	{...state,signals}
 
 export reduce-tick
