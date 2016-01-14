@@ -4,7 +4,7 @@ require! {
 	'../actions/action-names': actions
 	'./reducers':{reduce-tick}
 	'./mfd-reducer': {reduce-mfd}
-	'./formula-reducer': {reduce-prediction}
+	'./prediction-reducer': {reduce-prediction}
 	'../constants/constants': {ROAD-LENGTH,COLORS,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random,assign}
@@ -105,7 +105,7 @@ root = (state,action)->
 		paused = !state.paused
 		{...state, paused}
 	| actions.TICK
-		for i in [til 2]
+		for i in [til 15]
 			state = reduce-tick state
 		state
 	default state

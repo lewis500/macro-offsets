@@ -17,7 +17,7 @@ Header = react.create-class do
 				@props.paused
 		@props.pause-play()
 	render: ->
-		{num-signals,offset,cycle,green,dispatch,style,paused,tick,reset,change-mode} = @props 
+		{num-signals,offset,cycle,green,dispatch,style,paused,tick,mode,reset,change-mode} = @props 
 		actioner = (action,e)--> 
 			+e.target.value|>action|>dispatch
 
@@ -55,6 +55,7 @@ Header = react.create-class do
 							id: 'option-2' 
 							type: \radio
 							on-change: change-mode \fixed
+							checked: mode=='fixed'
 					span do
 						do 
 							className: 'mdl-radio__label'
@@ -71,6 +72,7 @@ Header = react.create-class do
 							id: 'option-3' 
 							type: \radio
 							on-change: change-mode 'time-path'
+							checked: mode=='time-path'
 					span do
 						do 
 							className: 'mdl-radio__label'
@@ -89,7 +91,7 @@ Header = react.create-class do
 					value: offset
 					max: 100
 					min: -100
-					step: 1
+					step: 2.5
 					on-change: actioner set-offset
 					label: 'offset'
 			Slider do
@@ -111,7 +113,7 @@ Header = react.create-class do
 
 Header = Header
 |> connect do
-	-> it{num-signals,offset,cycle,green,paused}
+	-> it{num-signals,offset,cycle,green,paused,mode}
 	(dispatch) ->
 		dispatch: dispatch
 		pause-play: -> dispatch type: 'PAUSE-PLAY'

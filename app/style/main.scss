@@ -12,9 +12,9 @@ body{
   	.mdl-button--colored, .mdl-js-ripple-effect;
 }
 
-.mdl-slider {
-  width: calc(100% - 20px);
-  margin: 0 10px;
+.mdl-slider__background-flex {
+  width: calc(100% - 10px);
+  margin: 0 5px;
 }
 
 .mdl-radio__label{

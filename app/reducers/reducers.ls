@@ -9,12 +9,15 @@ nexter = (i,list)->
 	list[(i+1)%list.length]
 
 reduce-time = (state)->
-	{time,rates} = state
+	{time,prediction,mode,offset} = state
 	time = time + 1
-	{...state, time}
+	if mode is 'time-path'
+		offset = prediction |> _.findLast _,(d)-> d.time<= time
+			|> (.offset)
+
+	{...state, time,offset}
 
 reduce-tick = ->
-	# a = if it.time%250==0 then reduce-mfd else (b)-> b
 	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory 
 
 differ = (a,b)->
@@ -106,7 +109,7 @@ reduce-memory = (state)->
 reduce-signals = (state)->
 	{signals,time,green,cycle,num-signals,offset,traveling} = state
 	signals = signals |> _.map _,(signal,i,k)->
-		time-in-cycle = (time - i*offset)%cycle
+		time-in-cycle = (time - i*offset)%%cycle
 		red = time-in-cycle>=green
 		{...signal, red}
 

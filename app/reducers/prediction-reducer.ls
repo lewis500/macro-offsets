@@ -6,20 +6,6 @@ require!{
 	'./mfd-reducer': {reduce-mfd}
 }
 
-calc-offset = (state)->
-	{traveling,cycle,green,num-signals,time} = state
-	k = traveling.length/ROAD-LENGTH
-	[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
-	r = k/K0
-	p = switch 
-		case r<a
-			1/VF
-		case a<=r< b
-			1/ VF * (1 - r) / (1 - green/cycle)
-		default
-			-1/W
-	offset = p * ROAD-LENGTH/num-signals
-
 reduce-prediction = (state)->
 	{cars,mfd,green,cycle,num-signals,mode} = state
 	V = d3.scale.linear()
@@ -34,7 +20,7 @@ reduce-prediction = (state)->
 	lines = [{time,cum-move}]
 	places = [til ROAD-LENGTH] |> pl.map -> -1
 	offset = 0
-	step = 25
+	step = 10
 
 	while (waiting.length>0 or traveling.length>0) and time<5000
 
@@ -71,17 +57,17 @@ reduce-prediction = (state)->
 		cum-entries+=num-entries
 
 		traveling = pl.concat [traveling,arrivals]
-		prediction.push {time,q,k,traveling,cum-entries,cum-exits}
+		prediction.push {time,q,k,traveling,cum-entries,cum-exits,offset}
 		time+=step
 
-		if mode is 'time-path' and time%50==0
+		if mode is 'time-path'
 			k = traveling.length/ROAD-LENGTH
 			[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
 			r = k/K0
-			p = switch 
-				case r<a
+			p = switch
+				| r<a
 					1/VF
-				case a<=r< b
+				| a<=r< b
 					1/ VF * (1 - r) / (1 - green/cycle)
 				default
 					-1/W
