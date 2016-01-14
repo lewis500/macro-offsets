@@ -11,11 +11,13 @@ nexter = (i,list)->
 reduce-time = (state)->
 	{time,prediction,mode,offset} = state
 	time = time + 1
+	recent = prediction 
+			|> _.findLast _,(d)-> d.time<= time
 	if mode is 'time-path'
-		offset = prediction |> _.findLast _,(d)-> d.time<= time
-			|> (.offset)
-
-	{...state, time,offset}
+		offset = recent.offset
+		reduce-mfd {...state,offset,time,forecast: recent}
+	else
+		{...state,time,forecast: recent}
 
 reduce-tick = ->
 	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory 

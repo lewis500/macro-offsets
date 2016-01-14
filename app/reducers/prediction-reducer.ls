@@ -17,7 +17,6 @@ reduce-prediction = (state)->
 	prediction = []
 	cum-move = cum-entries = cum-exits = time = 0
 
-	lines = [{time,cum-move}]
 	places = [til ROAD-LENGTH] |> pl.map -> -1
 	offset = 0
 	step = 10

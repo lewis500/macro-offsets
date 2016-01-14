@@ -45,7 +45,7 @@ MFD-Chart = react.create-class do
 		d3.select @refs.xAxis	.call xAxis
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
-		{mfd,memory} = @props
+		{mfd,memory,forecast} = @props
 
 		lines = memory[1 til ] |> _.map _,(b,i)->
 			a = memory[i]
@@ -78,7 +78,14 @@ MFD-Chart = react.create-class do
 						className: \bg
 				g className: 'g-paths'
 					path d: line(mfd),className:'mfd'
+					path d: line2(mfd),className:'vel'
 				circles
+				do ~>
+					if forecast				
+						circle do
+							className: 'memory formula'
+							r: 3
+							transform: @place-circle forecast
 				lines
 				g className:'y axis',ref: 'yAxis'
 				g className:'x axis',ref: 'xAxis',transform: "translate(0,#{height})"
@@ -87,7 +94,7 @@ MFD-Chart = react.create-class do
 		a
 		[tx,ty] = [x(d.k), y(d.q)]
 		"translate(#{tx},#{ty})"
-|> connect -> it{mfd,memory,formula-pred}
+|> connect -> it{mfd,memory,forecast}
 |> react.create-factory
 
 export MFD-Chart
