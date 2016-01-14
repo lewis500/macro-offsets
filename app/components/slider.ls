@@ -11,7 +11,12 @@ Slider = ({value,label,on-change,max,min,step})->
 			style: {display: \flex, flex-direction: \column,   align-items: \center}
 			div do
 				className: 'slider-label',style: {display: \flex, horizontal-align: 'center'}
-				"#{label}: #{Math.floor(value)}"
+				"#{label}:"
+				input do
+					type: \number
+					on-change: on-change
+					value: value
+					style: {width: \50px}
 			div do
 				style: {display: \flex}
 				input do

@@ -5,7 +5,7 @@ d3 = require 'd3'
 require '../style/style-charts.scss'
 {connect} = require 'react-redux'
 {map} = require 'prelude-ls'
-[width,height] = [250,250]
+[width,height] = [300,300]
 _ = require \lodash
 m = 
 	t: 20
@@ -72,7 +72,7 @@ MFD-Chart = react.create-class do
 			g do
 				transform: "translate(#{m.l},#{m.t})"
 				rect do
-					do 
+					do
 						width: width
 						height: height
 						className: \bg
@@ -81,7 +81,7 @@ MFD-Chart = react.create-class do
 					path d: line2(mfd),className:'vel'
 				circles
 				do ~>
-					if forecast				
+					if forecast
 						circle do
 							className: 'memory formula'
 							r: 3

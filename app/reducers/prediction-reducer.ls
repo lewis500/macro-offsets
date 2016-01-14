@@ -20,10 +20,26 @@ reduce-prediction = (state)->
 	places = [til ROAD-LENGTH] |> pl.map -> -1
 	offset = 0
 	step = 10
+	total-exits = []
 
 	while (waiting.length>0 or traveling.length>0) and time<5000
-
 		n0 = traveling.length
+
+		if mode is 'time-path'
+			k = traveling.length/ROAD-LENGTH
+			r = k/K0
+			p = switch
+				| r<green/cycle
+					1/VF
+				| green/cycle<=r< 1+(VF/W)*(1 - green/cycle)
+					1/ VF * (1 - r) / (1 - green/cycle)
+				default
+					-1/W
+			offset = p * ROAD-LENGTH/num-signals
+			{mfd} = reduce-mfd {...state,offset}
+			V = d3.scale.linear()
+				.domain( mfd |> pl.map (.k))
+				.range( mfd |> pl.map (.v))
 
 		v = V n0/ROAD-LENGTH
 		move = v*step
@@ -38,6 +54,8 @@ reduce-prediction = (state)->
 		exits |> pl.each (car)->
 			car.t-e = time
 			places[car.place] = -1
+
+		total-exits = pl.concat [total-exits,exits]
 
 		[arrivals,waiting] = waiting
 		|> pl.partition -> it.entry-time<=time
@@ -56,25 +74,16 @@ reduce-prediction = (state)->
 		cum-entries+=num-entries
 
 		traveling = pl.concat [traveling,arrivals]
-		prediction.push {time,q,k,traveling,cum-entries,cum-exits,offset}
+		prediction.push {time,q,k,traveling,cum-entries,cum-exits,offset,mfd}
 		time+=step
 
-		if mode is 'time-path'
-			k = traveling.length/ROAD-LENGTH
-			[a,b] = [green/cycle, 1+(VF/W)*(1 - green/cycle)]
-			r = k/K0
-			p = switch
-				| r<a
-					1/VF
-				| a<=r< b
-					1/ VF * (1 - r) / (1 - green/cycle)
-				default
-					-1/W
-			offset = p * ROAD-LENGTH/num-signals
-			{mfd} = reduce-mfd {...state,offset}
-			V = d3.scale.linear()
-				.domain( mfd |> pl.map (.k))
-				.range( mfd |> pl.map (.v))
+	window.cum-delay = total-exits |> _.reduce do
+			_
+			, (a,b)->
+				a+(b.t-e - b.t-a)
+			, 0
+
+
 	{...state,prediction}
 
 export reduce-prediction

@@ -24,59 +24,52 @@ Header = react.create-class do
 		radio-classes = "mdl-radio mdl-js-radio mdl-js-ripple-effect"
 
 		div do
-			style: style
-			div do
-				style:
-					display: \flex
-					flex-direction: \row
-					justify-content: 'space-around'
-					margin-bottom: \20px
+			style: {... style, justify-content: 'space around'}
+			button do
+				do
+					className: classes
+					on-click: reset
+				\reset
 
-				button do
-					do
-						className: classes
-						on-click: reset
-					\reset
+			button do
+				do
+					className: classes
+					on-click: @pause-play
+				if paused then \play else \pause
 
-				button do
+			label do
+				do
+					className: radio-classes
+					htmlFor: 'option-2'
+				input do
 					do
-						className: classes
-						on-click: @pause-play
-					if paused then \play else \pause
+						className: 'mdl-radio__button'
+						name: \options
+						id: 'option-2' 
+						type: \radio
+						on-change: change-mode \fixed
+						checked: mode=='fixed'
+				span do
+					do 
+						className: 'mdl-radio__label'
+					\fixed
 
-				label do
+			label do
+				do
+					className: radio-classes
+					htmlFor: 'option-3'
+				input do
 					do
-						className: radio-classes
-						htmlFor: 'option-2'
-					input do
-						do
-							className: 'mdl-radio__button'
-							name: \options
-							id: 'option-2' 
-							type: \radio
-							on-change: change-mode \fixed
-							checked: mode=='fixed'
-					span do
-						do 
-							className: 'mdl-radio__label'
-						\fixed
-
-				label do
-					do
-						className: radio-classes
-						htmlFor: 'option-3'
-					input do
-						do
-							className: 'mdl-radio__button'
-							name: \options
-							id: 'option-3' 
-							type: \radio
-							on-change: change-mode 'time-path'
-							checked: mode=='time-path'
-					span do
-						do 
-							className: 'mdl-radio__label'
-						'time-path'
+						className: 'mdl-radio__button'
+						name: \options
+						id: 'option-3' 
+						type: \radio
+						on-change: change-mode 'time-path'
+						checked: mode=='time-path'
+				span do
+					do 
+						className: 'mdl-radio__label'
+					'time-path'
 
 			Slider do
 				do

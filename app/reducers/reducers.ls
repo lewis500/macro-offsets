@@ -15,12 +15,15 @@ reduce-time = (state)->
 			|> _.findLast _,(d)-> d.time<= time
 	if mode is 'time-path'
 		offset = recent.offset
-		reduce-mfd {...state,offset,time,forecast: recent}
+		{...state,offset,time,forecast:recent,mfd:recent.mfd}
+		# reduce-mfd {...state,offset,time,forecast: recent, mfd: recent.mfd}
 	else
 		{...state,time,forecast: recent}
 
 reduce-tick = ->
-	it |> reduce-time |> reduce-signals |> reduce-cars |> reduce-memory 
+	it |> reduce-time |> reduce-signals 
+			|> reduce-cars |> reduce-memory 
+			
 
 differ = (a,b)->
 	res = (b - a)%%ROAD-LENGTH

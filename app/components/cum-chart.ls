@@ -1,11 +1,11 @@
 react = require 'react'
 d3 = require 'd3'
-{Q0,KJ} = require '../constants/constants'
+{Q0,KJ,NUM-CARS} = require '../constants/constants'
 {svg,circle,path,rect,g,line} = react.DOM
 require '../style/style-charts.scss'
 {connect} = require 'react-redux'
 {map} = require 'prelude-ls'
-[width,height] = [200,200]
+[width,height] = [300,300]
 
 m = 
 	t: 20
@@ -20,7 +20,7 @@ x = d3.scale
 
 y = d3.scale
 	.linear()
-	.domain [0,2000]
+	.domain [0,NUM-CARS]
 	.range [height,0]
 
 xAxis = d3.svg

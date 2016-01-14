@@ -29,4 +29,4 @@ template = react.createElement do
 # WIRE IT UP
 el = document.getElementById 'app'
 react-dom.render template,el
-store.dispatch type: 'SET-NUM-SIGNALS',num-signals: 25
+store.dispatch type: 'RESET'

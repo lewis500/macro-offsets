@@ -35,7 +35,7 @@ initial-state =
 	waiting: [...cars]
 	cycle: 100
 	green: 50
-	offset: 0
+	offset: 40
 	num-signals: 25
 	q: 0
 	n: 0
@@ -58,12 +58,14 @@ reset = (state)->
 			traveling: []
 			exited: []
 			waiting: [...cars]
-			q: 0
+			signals: signals-create state
 			n: 0
 			memory: []
 			history: []
 			EN: 0
 			EX: 0
+			q: 0
+			k:0
 			rates: []
 			queueing: []
 		{...state,...a}
@@ -87,7 +89,7 @@ root = (state,action)->
 	window.a = state
 	switch action.type
 	| actions.RESET
-		reset state
+		state |> reset |> combined
 	| actions.SET-MODE
 		state = {...state, mode: action.mode}
 		reduce-prediction state
