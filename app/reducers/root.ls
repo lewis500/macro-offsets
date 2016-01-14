@@ -108,7 +108,7 @@ root = (state,action)->
 		paused = !state.paused
 		{...state, paused}
 	| actions.TICK
-		for i in [til 15]
+		for i in [til 8]
 			state = reduce-tick state
 		state
 	default state

@@ -1,11 +1,6 @@
 SHORT TERM
-+ print out the time
-+ add the predictions back on the MFD chart
-+ have a button to turn off the cars
-
-MACRO
-+ figure out how to transition the signals better
-+ recalculate the MFD in real time for the offsets ?
++ calculate the long-run average green time
++ make it so the signals don't update everytime by initializing them correctly
 
 MICRO
 + do all the updats on the green of a single "anchor" signal

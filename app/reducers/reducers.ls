@@ -13,7 +13,7 @@ reduce-time = (state)->
 	time = time + 1
 	recent = prediction 
 			|> _.findLast _,(d)-> d.time<= time
-	if mode is 'time-path'
+	if mode is 'time-path' and time%%(3*cycle)==0
 		offset = recent.offset
 		{...state,offset,time,forecast:recent,mfd:recent.mfd}
 	else
@@ -119,11 +119,10 @@ reduce-signals = (state)->
 		| time >= next-green
 			if next-signal=k[i+1]
 				next-green = (next-signal.next-green - offset)
-				next-red = next-signal.next-red - offset
 				while next-green<time
 					next-green+=cycle
-				while next-red<time
-					next-red+=cycle
+				frac = (next-green - time)/cycle
+				next-red = time + frac*green
 			else
 				next-green = time + cycle
 				next-red = time + green
