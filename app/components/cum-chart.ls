@@ -38,20 +38,15 @@ path-maker = d3.svg
 	.x (.time)>>x
 	.y (.val)>>y
 
+# asdf = d3.svg.line()
+# 	.x (.time)
+
 Cum-Chart = react.create-class do
 	componentDidMount: ->
 		d3.select @refs.xAxis	.call xAxis
 		d3.select @refs.yAxis	.call yAxis
 	render: ->
-		{memory-EN,memory-EX,formula-EX,formula-EN,lines} = @props
-		# dashes = lines |> map (d)->
-		# 	line do
-		# 		y1:0
-		# 		y2: height
-		# 		x1: x d.time
-		# 		x2: x d.time
-		# 		key: d.time
-		# 		className: \dash
+		{memory-EN,memory-EX,history} = @props
 		svg do
 			do
 				id: 'mfdChart'
@@ -64,21 +59,20 @@ Cum-Chart = react.create-class do
 					d: path-maker memory-EN
 				path do
 					className: 'en f'
-					d: path-maker formula-EN
+					d: path-maker history
 				path do
 					className: 'ex'
 					d: path-maker memory-EX
 				path do
 					className: 'ex f'
-					d: path-maker formula-EX
-				# dashes
+					d: path-maker history
 				g className:'y axis',ref: 'yAxis'
 				g className:'x axis',ref: 'xAxis',transform: "translate(0,#{height})"
 
 	place_circle: (d)->
 		[tx,ty] = [x(d.k), y(d.q)]
 		"translate(#{tx},#{ty})"
-|> connect -> it{memory-EN,memory-EX,formula-EX,formula-EN,lines}
+|> connect -> it{memory-EN,memory-EX,history}
 |> react.create-factory
 
 export Cum-Chart

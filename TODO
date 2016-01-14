@@ -1,3 +1,8 @@
+SHORT TERM
++ find the upper limit flow for every k, i.e., the upper-bound MFD
++ use that to calculate the path of offsets
+
+
 MICRO
 + do all the updats on the green of a single "anchor" signal
 + add coloring for instant syncing

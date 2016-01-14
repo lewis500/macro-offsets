@@ -1,7 +1,9 @@
-pl = require 'prelude-ls'
-_ = require 'lodash'
-{SPACE,K0,VF,W,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} = require '../constants/constants'
-{reduce-mfd} = require './mfd-reducer'
+require!{
+	'prelude-ls': pl
+	lodash: _
+	'../constants/constants': {SPACE,K0,VF,W,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH,ROAD-LENGTH,MEMORY-FREQ,MAX-MEMORY} 
+	'./mfd-reducer': {reduce-mfd}
+}
 
 nexter = (i,list)->
 	list[(i+1)%list.length]

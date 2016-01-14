@@ -4,7 +4,7 @@ require! {
 	'../actions/action-names': actions
 	'./reducers':{reduce-tick}
 	'./mfd-reducer': {reduce-mfd}
-	'./formula-reducer': {reduce-formula}
+	'./formula-reducer': {reduce-history}
 	'../constants/constants': {ROAD-LENGTH,COLORS,VF,NUM-CARS,RUSH-LENGTH,TRIP-LENGTH}
 	'prelude-ls':{map,flatten,each,even}
 	lodash: {random,assign}
@@ -72,7 +72,7 @@ signals-create = (state)->
 				backwards: false
 		signals
 
-combined = reduce-mfd >> reduce-formula
+combined = reduce-mfd >> reduce-history
 
 root = (state,action)->
 	window.a = state
