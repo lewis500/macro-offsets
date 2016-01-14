@@ -9,14 +9,13 @@ nexter = (i,list)->
 	list[(i+1)%list.length]
 
 reduce-time = (state)->
-	{time,prediction,mode,offset} = state
+	{time,prediction,mode,offset,cycle} = state
 	time = time + 1
 	recent = prediction 
 			|> _.findLast _,(d)-> d.time<= time
 	if mode is 'time-path'
 		offset = recent.offset
 		{...state,offset,time,forecast:recent,mfd:recent.mfd}
-		# reduce-mfd {...state,offset,time,forecast: recent, mfd: recent.mfd}
 	else
 		{...state,time,forecast: recent}
 
