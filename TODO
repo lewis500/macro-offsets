@@ -1,6 +1,7 @@
 SHORT TERM
 + calculate the long-run average green time
 + make it so the signals don't update everytime by initializing them correctly
++ add another mode for macro-adaptive
 
 MICRO
 + do all the updats on the green of a single "anchor" signal

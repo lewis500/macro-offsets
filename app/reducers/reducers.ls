@@ -9,15 +9,26 @@ nexter = (i,list)->
 	list[(i+1)%list.length]
 
 reduce-time = (state)->
-	{time,prediction,mode,offset,cycle} = state
+	{time,prediction,mode,offset,green,cycle} = state
 	time = time + 1
-	recent = prediction 
+	forecast = prediction 
 			|> _.findLast _,(d)-> d.time<= time
-	if mode is 'time-path' and time%%(3*cycle)==0
-		offset = recent.offset
-		{...state,offset,time,forecast:recent,mfd:recent.mfd}
+	if mode is 'time-path' and time%%(2*cycle)==0
+		{traveling,num-signals} = state
+		k = traveling.length/ROAD-LENGTH
+		r = k/K0
+		p = switch
+			| r<green/cycle
+				1/VF
+			| green/cycle<=r< 1+(VF/W)*(1 - green/cycle)
+				1/ VF * (1 - r) / (1 - green/cycle)
+			default
+				-1/W
+		offset = p * ROAD-LENGTH/num-signals
+		reduce-mfd {...state,offset,time,forecast}
+		# {...state,offset,time,forecast,mfd:forecast.mfd}
 	else
-		{...state,time,forecast: recent}
+		{...state,time,forecast}
 
 reduce-tick = ->
 	it |> reduce-time |> reduce-signals 
@@ -118,7 +129,7 @@ reduce-signals = (state)->
 		switch 
 		| time >= next-green
 			if next-signal=k[i+1]
-				next-green = (next-signal.next-green - offset)
+				next-green = next-signal.next-green - offset
 				while next-green<time
 					next-green+=cycle
 				frac = (next-green - time)/cycle

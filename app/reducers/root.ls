@@ -79,8 +79,8 @@ signals-create = (state)->
 				x: Math.floor(i/num-signals*ROAD-LENGTH - 2)%%ROAD-LENGTH
 				id: i
 				red: false
-				next-green: 0
-				next-red: 1000
+				next-green: i*offset%cycle
+				next-red: (i*offset + green)%cycle
 		signals
 
 combined = reduce-mfd 
@@ -108,7 +108,7 @@ root = (state,action)->
 		paused = !state.paused
 		{...state, paused}
 	| actions.TICK
-		for i in [til 8]
+		for i in [til 15]
 			state = reduce-tick state
 		state
 	default state
